@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DesiSmash by Chef Hass | Smash Burgers, Leicester</title>
 <meta name="description" content="Chef-led smash burgers in Leicester with Original or Desi spiced patties. Pre-order for Friday, Saturday and Sunday.">
-<meta name="theme-color" content="#141210">
+<meta name="theme-color" content="#C84F00">
 <meta property="og:title" content="DesiSmash by Chef Hass">
 <meta property="og:description" content="Original & Spiced Smash Burgers. Leicester. Fri, Sat and Sun. Pre-order now.">
 <meta property="og:image" content="logos/neon-logo.jpg">
@@ -13,7 +13,7 @@
 <link rel="icon" href="logos/neon-logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FoodEstablishment","name":"DesiSmash by Chef Hass","servesCuisine":["Burgers","Indian fusion"],"areaServed":"Leicester","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Friday","Saturday","Sunday"],"opens":"17:00","closes":"22:30"}]}
@@ -23,38 +23,52 @@
 
 <div class="announce" id="announce" hidden></div>
 <header class="top">
-  <a class="brand" href="#top" aria-label="DesiSmash home">DESI<span>SMASH</span></a>
+  <a class="brand" href="#top" aria-label="DesiSmash by Chef Hass, home"><b>DESI<span>SMASH</span></b><small>by Chef Hass</small></a>
   <nav aria-label="Main">
     <a href="#menu">Menu</a>
-    <a href="#how">How it works</a>
+    <a href="#delivery">Delivery</a>
     <a href="#home">Cook at home</a>
-    <a href="#apps">Apps</a>
+    <a href="#hours">Hours</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <button class="cart-btn" id="open-cart" type="button">Basket <span id="cart-count">0</span></button>
+  <div class="top-actions">
+    <button class="cart-btn" id="open-cart" type="button" aria-label="Open basket">Basket <span id="cart-count">0</span></button>
+    <a class="pill order" href="#menu">Order now</a>
+  </div>
 </header>
 
 <main id="top">
   <section class="hero">
     <div class="hero-copy">
       <p class="status" id="status" role="status">Checking opening hours…</p>
-      <h1>Original &amp; Spiced<br><em>Smash Burgers</em></h1>
-      <p class="lead">Chef Hass has 25 years of spice work behind every patty. Pick Original or Desi, beef or chicken. Pre-order for Friday, Saturday and Sunday in Leicester.</p>
+      <h1>Smashed fresh.<br>Spiced right.</h1>
+      <p class="lead">Chef-led smash burgers in Leicester with 25 years of spice work behind every patty. Pick Original or Desi, beef or chicken, then collect or get it delivered.</p>
       <div class="cta-row">
-        <a class="btn primary" href="#menu">Order now</a>
-        <button class="btn" id="share-site" type="button">Share with friends</button>
+        <a class="pill solid-white" href="#menu">Order now</a>
+        <a class="pill ghost-white" href="#menu">View menu</a>
       </div>
-      <p class="hours">Fri · Sat · Sun, 5:00 to 10:30 pm</p>
+      <p class="hours">Fri · Sat · Sun, 5:00 to 10:30 pm · Leicester</p>
     </div>
-    <img class="hero-img" src="logos/neon-logo.jpg" alt="DesiSmash by Chef Hass neon logo" width="1024" height="559">
+    <div class="hero-art">
+      <img src="logos/packaging-set.jpg" alt="DesiSmash burger wrap, box and bag with the Chef Hass logo" width="1024" height="559">
+      <div class="special" id="special" hidden></div>
+    </div>
   </section>
 
-  <section class="special" id="special" hidden></section>
+  <section id="delivery" class="band-grey">
+    <div class="wrap row-split">
+      <div>
+        <h2>Get burgers delivered near you</h2>
+        <p>Order direct for the best price, or find us on your favourite delivery app.</p>
+      </div>
+      <div class="apps" id="apps-row"></div>
+    </div>
+  </section>
 
-  <section id="menu" class="block">
+  <section id="menu" class="wrap block">
     <div class="block-head">
-      <h2>Menu</h2>
-      <p>Every burger is a double smash on a butter-toasted brioche bun. Make it a meal with fries and a can.</p>
+      <h2>Our menu</h2>
+      <p>Every burger is a double smash on a butter-toasted brioche bun. Make it a meal with seasoned fries and a can.</p>
     </div>
     <div class="chips" id="chips" role="tablist" aria-label="Menu filter"></div>
     <div id="burger-grid" class="cards"></div>
@@ -64,73 +78,98 @@
     <p class="fine" id="allergen"></p>
   </section>
 
-  <section id="how" class="block">
-    <div class="block-head">
-      <h2>Get it hot, your way</h2>
-      <p>Collect from our Leicester kitchen or have it delivered. Pre-order for any open slot this weekend.</p>
-    </div>
-    <ol class="steps">
-      <li><b>Build your order</b><span>Pick Original or Desi, beef or chicken, then add fries and a can.</span></li>
-      <li><b>Choose your slot</b><span>Friday, Saturday or Sunday, 30-minute slots from 5 pm.</span></li>
-      <li><b>Confirm on WhatsApp</b><span>Your order lands in our WhatsApp. We reply to confirm. Pay on collection or delivery.</span></li>
-    </ol>
-    <div class="calc">
-      <h3>Delivery fee calculator</h3>
-      <div class="bands" id="bands"></div>
-      <div class="calc-row">
-        <label for="c-post">Your postcode</label>
-        <input id="c-post" autocomplete="postal-code" placeholder="LE3 1AA">
-        <button class="btn primary" type="button" id="c-check">Check fee</button>
+  <section id="how" class="band-grey">
+    <div class="wrap block">
+      <div class="block-head">
+        <h2>How it works</h2>
+        <p>Collect from our Leicester kitchen or have it delivered. Pre-order for any open slot this weekend.</p>
       </div>
-      <p class="fee-out" id="c-result" role="status"></p>
-    </div>
-    <p class="fine" id="area"></p>
-  </section>
-
-  <section id="home" class="block">
-    <div class="block-head">
-      <h2>Make the fakeaway at home</h2>
-      <p>Cook DesiSmash in your own kitchen with Chef Hass's recipes and spice blend.</p>
-    </div>
-    <div class="home-grid">
-      <div class="card lead-card" id="lead-card">
-        <span class="tag free">Free recipe</span>
-        <h3>The Desi Smash burger, step by step</h3>
-        <p>A 3-page recipe with the Desi patty, the smash method and mint-coriander chutney mayo. Enter your details and download it.</p>
-        <form id="lead-form" novalidate>
-          <label>Name<input id="l-name" autocomplete="name" required></label>
-          <label>Email<input id="l-email" type="email" autocomplete="email" inputmode="email" required></label>
-          <input class="hp" id="l-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <label class="check"><input type="checkbox" id="l-mkt"><span>Also email me weekend specials and offers. Optional. Unsubscribe any time.</span></label>
-          <p class="error" id="l-error" role="alert" hidden></p>
-          <button class="btn primary wide" type="submit" id="l-send">Send me the free recipe</button>
-          <p class="fine">We use your name and email to send the recipe. If you tick the box we also send offers. We never sell your details. <a id="l-priv" href="privacy.html" target="_blank" rel="noopener">Privacy notice</a>.</p>
-        </form>
-        <div id="lead-done" hidden>
-          <h3>Thanks, here it is</h3>
-          <a class="btn primary wide" id="l-dl" href="downloads/Desi-Smash-Starter-Recipe.pdf" download>Download the recipe (PDF)</a>
-          <p class="fine" id="l-note"></p>
+      <ol class="steps">
+        <li><b>Build your order</b><span>Pick Original or Desi, beef or chicken, then add fries and a can.</span></li>
+        <li><b>Choose your slot</b><span>Friday, Saturday or Sunday, 30-minute slots from 5 pm.</span></li>
+        <li><b>Confirm on WhatsApp</b><span>Your order lands in our WhatsApp. We reply to confirm. Pay on collection or delivery.</span></li>
+      </ol>
+      <div class="calc">
+        <h3>Delivery fee calculator</h3>
+        <div class="bands" id="bands"></div>
+        <div class="calc-row">
+          <label for="c-post">Your postcode</label>
+          <input id="c-post" autocomplete="postal-code" placeholder="LE3 1AA">
+          <button class="pill solid" type="button" id="c-check">Check fee</button>
         </div>
+        <p class="fee-out" id="c-result" role="status"></p>
       </div>
-      <div id="shop" class="shop"></div>
+      <p class="fine" id="area"></p>
     </div>
   </section>
 
-  <section id="apps" class="block">
+  <section id="hours" class="wrap block">
     <div class="block-head">
-      <h2>Order on the apps</h2>
-      <p>Prefer Uber Eats, Deliveroo or Just Eat? Order there. Direct orders on this site are the best value.</p>
+      <h2>This weekend</h2>
+      <p>We cook Friday to Sunday and prep on Thursday, so every burger is fresh.</p>
     </div>
-    <div class="apps" id="apps-row"></div>
+    <div class="days">
+      <div class="day"><b>Friday</b><span>5:00 pm to 10:30 pm</span><small>Last orders 10:00 pm</small></div>
+      <div class="day"><b>Saturday</b><span>5:00 pm to 10:30 pm</span><small>Last orders 10:00 pm</small></div>
+      <div class="day"><b>Sunday</b><span>5:00 pm to 10:30 pm</span><small>Last orders 10:00 pm</small></div>
+    </div>
   </section>
 
-  <section id="drops" class="block drops">
-    <h2>Never miss a weekend drop</h2>
-    <p>Get the weekly special and open slots on WhatsApp before they go on social.</p>
-    <a class="btn primary" id="join" href="#" target="_blank" rel="noopener">Join the drop list on WhatsApp</a>
+  <section id="home" class="band-brand">
+    <div class="wrap block">
+      <div class="block-head on-brand">
+        <h2>Make the fakeaway at home</h2>
+        <p>Cook DesiSmash in your own kitchen with Chef Hass's recipes and spice blend.</p>
+      </div>
+      <div class="home-grid">
+        <div class="card lead-card" id="lead-card">
+          <span class="tag free">Free recipe</span>
+          <h3>The Desi Smash burger, step by step</h3>
+          <p>A 3-page recipe with the Desi patty, the smash method and mint-coriander chutney mayo. Enter your details and download it.</p>
+          <form id="lead-form" novalidate>
+            <label>Name<input id="l-name" autocomplete="name" required></label>
+            <label>Email<input id="l-email" type="email" autocomplete="email" inputmode="email" required></label>
+            <input class="hp" id="l-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <label class="check"><input type="checkbox" id="l-mkt"><span>Also email me weekend specials and offers. Optional. Unsubscribe any time.</span></label>
+            <p class="error" id="l-error" role="alert" hidden></p>
+            <button class="btn primary wide" type="submit" id="l-send">Send me the free recipe</button>
+            <p class="fine">We use your name and email to send the recipe. If you tick the box we also send offers. We never sell your details. <a id="l-priv" href="privacy.html" target="_blank" rel="noopener">Privacy notice</a>.</p>
+          </form>
+          <div id="lead-done" hidden>
+            <h3>Thanks, here it is</h3>
+            <a class="btn primary wide" id="l-dl" href="downloads/Desi-Smash-Starter-Recipe.pdf" download>Download the recipe (PDF)</a>
+            <p class="fine" id="l-note"></p>
+          </div>
+        </div>
+        <div id="shop" class="shop"></div>
+      </div>
+    </div>
   </section>
 
-  <section id="faq" class="block">
+  <section class="wrap block values">
+    <div class="block-head">
+      <h2>Why this isn't your ordinary burger</h2>
+      <p>For 25 years Chef Hass has cooked with spice for a living. DesiSmash is that experience in a smash burger.</p>
+    </div>
+    <div class="value-grid">
+      <div class="value"><b>25 years of spice</b><span>House-roasted spice blends, chilli, coriander and ginger-garlic worked into every Desi patty.</span></div>
+      <div class="value"><b>Smashed to order</b><span>Every patty hits a very hot griddle when you order, so the crust is crisp and the spices bloom in the fat.</span></div>
+      <div class="value"><b>Made in Leicester</b><span>Sauces and spice blends are made in-house on Thursday, then cooked fresh Friday to Sunday.</span></div>
+    </div>
+    <p class="sign">Chef Hass</p>
+  </section>
+
+  <section id="drops" class="band-grey">
+    <div class="wrap drops">
+      <div>
+        <h2>Never miss a weekend drop</h2>
+        <p>Get the weekly special and open slots on WhatsApp before they go on social.</p>
+      </div>
+      <a class="pill solid" id="join" href="#" target="_blank" rel="noopener">Join the drop list on WhatsApp</a>
+    </div>
+  </section>
+
+  <section id="faq" class="wrap block">
     <h2>Questions</h2>
     <div class="faq">
       <details><summary>When are you open?</summary><p>Friday, Saturday and Sunday, 5:00 to 10:30 pm. Last orders 10:00 pm. We prep on Thursday, so we do not take orders on other days.</p></details>
@@ -142,25 +181,43 @@
     </div>
   </section>
 
-  <section id="follow" class="block">
-    <div class="block-head">
-      <h2>Follow the weekend drops</h2>
-      <p>Each week's special, open slots and sold-out alerts are posted on social first.</p>
+  <section id="follow" class="band-grey">
+    <div class="wrap row-split">
+      <div>
+        <h2>Follow the weekend drops</h2>
+        <p>Each week's special, open slots and sold-out alerts are posted on social first.</p>
+      </div>
+      <div class="apps" id="social-row"></div>
     </div>
-    <div class="apps" id="social-row"></div>
-  </section>
-
-  <section class="block story">
-    <h2>Why this isn't your ordinary burger</h2>
-    <p>For 25 years I've dedicated my life to spice pairing, flavour balance and culinary precision. DesiSmash is that experience distilled into crispy, lacework smash patties, house-made sauces and spice blends roasted from scratch here in Leicester. Every patty is smashed fresh to order so the spices bloom in the fat.</p>
-    <p class="sign">Chef Hass</p>
   </section>
 </main>
 
 <footer>
-  <p>DesiSmash by Chef Hass · Leicester · Fri, Sat &amp; Sun</p>
-  <p class="fine">Order confirmation comes from Chef Hass on WhatsApp. Allergies: tell us when you order.</p>
-  <p class="fine"><a href="privacy.html">Privacy</a> · <a href="#faq">FAQ</a> · <a href="#menu">Menu</a> · <a href="#follow">Social</a></p>
+  <div class="wrap foot-grid">
+    <div>
+      <b class="foot-brand">DESI<span>SMASH</span></b>
+      <p>Chef-led smash burgers in Leicester. Fri, Sat &amp; Sun.</p>
+    </div>
+    <div>
+      <b>Order</b>
+      <a href="#menu">Menu</a>
+      <a href="#delivery">Delivery</a>
+      <a href="#hours">Opening hours</a>
+    </div>
+    <div>
+      <b>More</b>
+      <a href="#home">Cook at home</a>
+      <a href="#faq">FAQ</a>
+      <a href="#follow">Social</a>
+      <button class="foot-link" id="share-site" type="button">Share this site</button>
+    </div>
+    <div>
+      <b>Legal</b>
+      <a href="privacy.html">Privacy</a>
+      <a href="#allergen">Allergen information</a>
+    </div>
+  </div>
+  <p class="fine wrap">Order confirmation comes from Chef Hass on WhatsApp. Allergies: tell us when you order. © DesiSmash by Chef Hass.</p>
 </footer>
 
 <div class="cartbar" id="cartbar" hidden>
