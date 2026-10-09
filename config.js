@@ -6,8 +6,8 @@ window.DESI = {
 
   // Orders arrive here. Use your WhatsApp Business number, country code first, digits only.
   // Example: "447123456789". Leave empty until you have it: customers then get a copy-order button.
-  whatsapp: "",
-  phoneDisplay: "",
+  whatsapp: "447786801291",
+  phoneDisplay: "07786 801291",
 
   // Public links. Empty strings show "Coming soon".
   social: {
@@ -29,7 +29,7 @@ window.DESI = {
 
   // Delivery is priced by distance from your kitchen. Collection is always free.
   // Put your exact kitchen postcode here (customers never see it). Until then the LE3 area centre is used.
-  kitchenPostcode: "",
+  kitchenPostcode: "LE3 8RH",   // a nearby postcode, so your home address is not published
   kitchenOutcode: "LE3",
   // Distance is a straight line from your postcode to theirs, multiplied by roadFactor to approximate
   // the drive. Use 1.2 for typical Leicester streets, or 1 for pure straight-line miles.

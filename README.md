@@ -27,13 +27,16 @@ This has no card payments, so it needs no payment account and costs nothing. If 
 5. Each weekend: change `special`, and add sold-out item ids to `soldOut`.
 6. Publish (below), then open `post-kit.html` to write your posts.
 
-## Free hosting (pick one)
+## Hosting and updating (all through GitHub)
 
-- **Cloudflare Pages**: dash.cloudflare.com, Workers & Pages, Create, Pages, Upload assets. Drag the `site` folder in. You get a `yourname.pages.dev` address. Re-upload after each change.
-- **Netlify Drop**: app.netlify.com/drop, drag the `site` folder in.
-- **GitHub Pages**: put the `site` folder in a repository, then Settings, Pages.
+This repository is the website. GitHub Pages publishes it, and every commit to `main` goes live in about a minute.
 
-A custom domain such as `desismash.co.uk` costs about £10 a year. It's optional.
+- **Live site:** https://jaminhassan-debug.github.io/desismash-site/
+- **Edit a file:** open it on GitHub, press the pencil icon, change it, press Commit changes.
+- **Weekly changes:** edit `config.js` (special, sold-out list, announcement) and commit.
+- **Source of truth:** this repo only holds public files. The paid recipe book, its source and the business blueprint live in the separate private repo `desismash-private`. Never add them here.
+
+Pages setup (already done): Settings, Pages, Deploy from a branch, `main`, `/ (root)`.
 
 ## Uber Eats, Deliveroo and Just Eat
 
@@ -54,7 +57,7 @@ The "Make the fakeaway at home" section does three jobs:
 
 1. **Free recipe for an email.** People enter name and email (and can tick an optional box for offers) and download `downloads/Desi-Smash-Starter-Recipe.pdf`.
 2. **Spice blend.** "Add to my order" puts a jar in the basket. It is collected or delivered with the weekend order and paid for like the burgers.
-3. **Recipe book.** `paid-products/Desi-Smash-At-Home-Recipe-Book.pdf` is the paid PDF. It is deliberately **not** inside the `site` folder, because anything inside is public. Upload it to Payhip, Gumroad or a Stripe Payment Link, which take payment and email the file. Paste that link into `shop[1].url` in `config.js`. Until then the button says "Coming soon".
+3. **Recipe book.** `Desi-Smash-At-Home-Recipe-Book.pdf` is the paid PDF. It is kept in the private `desismash-private` repo, never in this public one. Upload it to Payhip, Gumroad or a Stripe Payment Link, which take payment and email the file. Paste that link into `shop[1].url` in `config.js`. Until then the button says "Coming soon".
 
 ### Getting the emails (do this before launch)
 
@@ -76,7 +79,7 @@ To send the weekly offers you will need an email tool such as Brevo or Mailchimp
 
 ### Editing the recipe PDFs
 
-The text of both PDFs is in `recipe-pdf-src/build.py`. Edit it, run `python3 build.py` (needs Google Chrome), and both PDFs are rebuilt.
+The text of both PDFs is in `recipe-pdf-src/build.py` in the private `desismash-private` repo. Edit it there, rebuild, then copy the free PDF into this repo's `downloads/` folder.
 
 ## Social media
 
