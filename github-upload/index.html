@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DesiSmash by Chef Hass | Smash Burgers, Leicester</title>
+<meta name="description" content="Chef-led smash burgers in Leicester with Original or Desi spiced patties. Pre-order for Friday, Saturday and Sunday.">
+<meta name="theme-color" content="#141210">
+<meta property="og:title" content="DesiSmash by Chef Hass">
+<meta property="og:description" content="Original & Spiced Smash Burgers. Leicester. Fri, Sat and Sun. Pre-order now.">
+<meta property="og:image" content="logos/neon-logo.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="logos/neon-logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FoodEstablishment","name":"DesiSmash by Chef Hass","servesCuisine":["Burgers","Indian fusion"],"areaServed":"Leicester","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Friday","Saturday","Sunday"],"opens":"17:00","closes":"22:30"}]}
+</script>
+</head>
+<body>
+
+<div class="announce" id="announce" hidden></div>
+<header class="top">
+  <a class="brand" href="#top" aria-label="DesiSmash home">DESI<span>SMASH</span></a>
+  <nav aria-label="Main">
+    <a href="#menu">Menu</a>
+    <a href="#how">How it works</a>
+    <a href="#home">Cook at home</a>
+    <a href="#apps">Apps</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <button class="cart-btn" id="open-cart" type="button">Basket <span id="cart-count">0</span></button>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="status" id="status" role="status">Checking opening hours…</p>
+      <h1>Original &amp; Spiced<br><em>Smash Burgers</em></h1>
+      <p class="lead">Chef Hass has 25 years of spice work behind every patty. Pick Original or Desi, beef or chicken. Pre-order for Friday, Saturday and Sunday in Leicester.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#menu">Order now</a>
+        <button class="btn" id="share-site" type="button">Share with friends</button>
+      </div>
+      <p class="hours">Fri · Sat · Sun, 5:00 to 10:30 pm</p>
+    </div>
+    <img class="hero-img" src="logos/neon-logo.jpg" alt="DesiSmash by Chef Hass neon logo" width="1024" height="559">
+  </section>
+
+  <section class="special" id="special" hidden></section>
+
+  <section id="menu" class="block">
+    <div class="block-head">
+      <h2>Menu</h2>
+      <p>Every burger is a double smash on a butter-toasted brioche bun. Make it a meal with fries and a can.</p>
+    </div>
+    <div class="chips" id="chips" role="tablist" aria-label="Menu filter"></div>
+    <div id="burger-grid" class="cards"></div>
+
+    <h3 class="sub">Sides, dips and drinks</h3>
+    <div id="side-grid" class="cards"></div>
+    <p class="fine" id="allergen"></p>
+  </section>
+
+  <section id="how" class="block">
+    <div class="block-head">
+      <h2>Get it hot, your way</h2>
+      <p>Collect from our Leicester kitchen or have it delivered. Pre-order for any open slot this weekend.</p>
+    </div>
+    <ol class="steps">
+      <li><b>Build your order</b><span>Pick Original or Desi, beef or chicken, then add fries and a can.</span></li>
+      <li><b>Choose your slot</b><span>Friday, Saturday or Sunday, 30-minute slots from 5 pm.</span></li>
+      <li><b>Confirm on WhatsApp</b><span>Your order lands in our WhatsApp. We reply to confirm. Pay on collection or delivery.</span></li>
+    </ol>
+    <div class="calc">
+      <h3>Delivery fee calculator</h3>
+      <div class="bands" id="bands"></div>
+      <div class="calc-row">
+        <label for="c-post">Your postcode</label>
+        <input id="c-post" autocomplete="postal-code" placeholder="LE3 1AA">
+        <button class="btn primary" type="button" id="c-check">Check fee</button>
+      </div>
+      <p class="fee-out" id="c-result" role="status"></p>
+    </div>
+    <p class="fine" id="area"></p>
+  </section>
+
+  <section id="home" class="block">
+    <div class="block-head">
+      <h2>Make the fakeaway at home</h2>
+      <p>Cook DesiSmash in your own kitchen with Chef Hass's recipes and spice blend.</p>
+    </div>
+    <div class="home-grid">
+      <div class="card lead-card" id="lead-card">
+        <span class="tag free">Free recipe</span>
+        <h3>The Desi Smash burger, step by step</h3>
+        <p>A 3-page recipe with the Desi patty, the smash method and mint-coriander chutney mayo. Enter your details and download it.</p>
+        <form id="lead-form" novalidate>
+          <label>Name<input id="l-name" autocomplete="name" required></label>
+          <label>Email<input id="l-email" type="email" autocomplete="email" inputmode="email" required></label>
+          <input class="hp" id="l-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="check"><input type="checkbox" id="l-mkt"><span>Also email me weekend specials and offers. Optional. Unsubscribe any time.</span></label>
+          <p class="error" id="l-error" role="alert" hidden></p>
+          <button class="btn primary wide" type="submit" id="l-send">Send me the free recipe</button>
+          <p class="fine">We use your name and email to send the recipe. If you tick the box we also send offers. We never sell your details. <a id="l-priv" href="privacy.html" target="_blank" rel="noopener">Privacy notice</a>.</p>
+        </form>
+        <div id="lead-done" hidden>
+          <h3>Thanks, here it is</h3>
+          <a class="btn primary wide" id="l-dl" href="downloads/Desi-Smash-Starter-Recipe.pdf" download>Download the recipe (PDF)</a>
+          <p class="fine" id="l-note"></p>
+        </div>
+      </div>
+      <div id="shop" class="shop"></div>
+    </div>
+  </section>
+
+  <section id="apps" class="block">
+    <div class="block-head">
+      <h2>Order on the apps</h2>
+      <p>Prefer Uber Eats, Deliveroo or Just Eat? Order there. Direct orders on this site are the best value.</p>
+    </div>
+    <div class="apps" id="apps-row"></div>
+  </section>
+
+  <section id="drops" class="block drops">
+    <h2>Never miss a weekend drop</h2>
+    <p>Get the weekly special and open slots on WhatsApp before they go on social.</p>
+    <a class="btn primary" id="join" href="#" target="_blank" rel="noopener">Join the drop list on WhatsApp</a>
+  </section>
+
+  <section id="faq" class="block">
+    <h2>Questions</h2>
+    <div class="faq">
+      <details><summary>When are you open?</summary><p>Friday, Saturday and Sunday, 5:00 to 10:30 pm. Last orders 10:00 pm. We prep on Thursday, so we do not take orders on other days.</p></details>
+      <details><summary>What is the difference between Original and Desi?</summary><p>Original is a classic American-style smash with salt and pepper. Desi patties are mixed with green chilli, coriander, ginger-garlic and house-roasted spices. Both come in beef or chicken at the same price.</p></details>
+      <details><summary>How do I pay?</summary><p>You pay on collection or delivery. Your order is confirmed when Chef Hass replies on WhatsApp.</p></details>
+      <details><summary>Do you deliver?</summary><p id="faq-del"></p></details>
+      <details><summary>Allergies and dietary needs</summary><p id="faq-all"></p></details>
+      <details><summary>Is there a vegetarian option?</summary><p>Yes. The Paneer Tikka Melt is vegetarian. Choose "Vegetarian" in the menu filter. It is cooked on the same griddle as the meat burgers, so tell us if you need it kept separate.</p></details>
+    </div>
+  </section>
+
+  <section id="follow" class="block">
+    <div class="block-head">
+      <h2>Follow the weekend drops</h2>
+      <p>Each week's special, open slots and sold-out alerts are posted on social first.</p>
+    </div>
+    <div class="apps" id="social-row"></div>
+  </section>
+
+  <section class="block story">
+    <h2>Why this isn't your ordinary burger</h2>
+    <p>For 25 years I've dedicated my life to spice pairing, flavour balance and culinary precision. DesiSmash is that experience distilled into crispy, lacework smash patties, house-made sauces and spice blends roasted from scratch here in Leicester. Every patty is smashed fresh to order so the spices bloom in the fat.</p>
+    <p class="sign">Chef Hass</p>
+  </section>
+</main>
+
+<footer>
+  <p>DesiSmash by Chef Hass · Leicester · Fri, Sat &amp; Sun</p>
+  <p class="fine">Order confirmation comes from Chef Hass on WhatsApp. Allergies: tell us when you order.</p>
+  <p class="fine"><a href="privacy.html">Privacy</a> · <a href="#faq">FAQ</a> · <a href="#menu">Menu</a> · <a href="#follow">Social</a></p>
+</footer>
+
+<div class="cartbar" id="cartbar" hidden>
+  <button type="button" id="cartbar-btn"><span id="cartbar-count">0 items</span> ·<b id="cartbar-total">£0.00</b> <span class="go">View basket</span></button>
+</div>
+
+<!-- Item dialog -->
+<dialog id="item-dialog" aria-labelledby="item-title">
+  <form method="dialog" class="sheet" id="item-form">
+    <div class="sheet-head"><h3 id="item-title"></h3><button class="x" value="cancel" aria-label="Close">×</button></div>
+    <p class="fine" id="item-desc"></p>
+    <div id="item-options"></div>
+    <div class="qty-row">
+      <div class="qty"><button type="button" id="q-minus" aria-label="Fewer">−</button><output id="q-val">1</output><button type="button" id="q-plus" aria-label="More">+</button></div>
+      <button type="button" class="btn primary" id="item-add">Add · <span id="item-price"></span></button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Basket and checkout -->
+<dialog id="cart-dialog" aria-labelledby="cart-title">
+  <div class="sheet">
+    <div class="sheet-head"><h3 id="cart-title">Your basket</h3><button class="x" id="cart-close" aria-label="Close">×</button></div>
+    <div id="cart-empty" class="fine">Your basket is empty. Pick a burger from the menu.</div>
+    <ul id="cart-lines" class="lines"></ul>
+    <div id="checkout" hidden>
+      <div class="totals">
+        <div><span>Subtotal</span><b id="t-sub">£0.00</b></div>
+        <div id="t-del-row" hidden><span>Delivery</span><b id="t-del">£0.00</b></div>
+        <div class="grand"><span>Total</span><b id="t-total">£0.00</b></div>
+      </div>
+      <form id="order-form" novalidate>
+        <fieldset class="seg">
+          <legend>How do you want it?</legend>
+          <label><input type="radio" name="mode" value="Collection" checked> Collection</label>
+          <label><input type="radio" name="mode" value="Delivery"> Delivery</label>
+        </fieldset>
+        <div class="two">
+          <label>Day<select id="f-day" required></select></label>
+          <label>Time<select id="f-slot" required></select></label>
+        </div>
+        <label>Name<input id="f-name" autocomplete="name" required></label>
+        <label>Mobile<input id="f-phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
+        <div id="addr" hidden>
+          <label>Address<input id="f-addr" autocomplete="street-address"></label>
+          <label>Postcode<input id="f-post" autocomplete="postal-code"></label>
+          <button class="btn" type="button" id="check-fee">Check delivery fee</button>
+          <p class="fine" id="fee-result" role="status"></p>
+          <p class="fine" id="del-note"></p>
+        </div>
+        <label>Email (optional)<input id="f-email" type="email" autocomplete="email" inputmode="email"></label>
+        <label class="check"><input type="checkbox" id="f-mkt"><span>Send me weekend specials and offers. Optional.</span></label>
+        <label>Notes and allergies<textarea id="f-note" rows="2" placeholder="Allergies, spice level, door code…"></textarea></label>
+        <p class="error" id="f-error" role="alert" hidden></p>
+        <button class="btn primary wide" type="submit" id="send">Send order on WhatsApp</button>
+        <button class="btn wide" type="button" id="copy-order">Copy order text</button>
+        <button class="link" type="button" id="clear-cart">Clear basket</button>
+        <p class="fine" id="send-note">You pay on collection or delivery. Your order is confirmed when Chef Hass replies on WhatsApp.</p>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
