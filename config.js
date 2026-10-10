@@ -87,7 +87,7 @@ window.DESI = {
     { id: "bombay",   tier: 2, name: "Tamarind & Bombay Street",heat: 1, desc: "Aged cheddar, tamarind chutney, coriander lime sauce, crushed papri crisp." },
     { id: "truffle",  tier: 2, name: "Truffle & Wild Mushroom", heat: 0, desc: "Swiss cheese, garlic and thyme mushrooms, truffle mayo, spinach." },
     { id: "paneer",   tier: 2, name: "Paneer Tikka Melt",       heat: 1, veg: true, desc: "Tawa-seared paneer in tikka marinade, pepper jack, mint chutney mayo, pickled red onion." },
-    { id: "triple",   tier: 3, name: "The Triple Threat",       heat: 0, desc: "Three smashed patties, three cheese slices, double pickles, extra OG sauce." }
+    { id: "triple",   tier: 3, name: "The Triple Threat",       heat: 0, desc: "Three 2.5 oz smashed patties, three cheese slices, double pickles, extra OG sauce." }
   ],
 
   fries: ["Masala dust", "Peri-peri", "Sea salt"],
