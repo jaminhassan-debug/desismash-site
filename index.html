@@ -42,18 +42,19 @@
 
 <main id="top">
   <section class="hero">
-    <div class="hero-copy">
-      <p class="status" id="status" role="status">Checking opening hours…</p>
-      <h1>Smashed fresh.<br>Spiced right.</h1>
-      <p class="lead">Chef-led smash burgers in Leicester with 25 years of spice work behind every patty. Pick Original or Desi, beef or chicken, then collect or get it delivered.</p>
-      <div class="cta-row">
-        <a class="pill solid-white" href="#menu">Order now</a>
-        <a class="pill ghost-white" href="#menu">View menu</a>
+    <img id="hero-img" class="hero-bg" src="images/tikka-banner.jpg" alt="Tikka Butter Melt smash burger" width="1600" height="1067" fetchpriority="high">
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="status" id="status" role="status">Checking opening hours…</p>
+        <h1>Smashed fresh.<br>Spiced right.</h1>
+        <p class="lead">Chef-led smash burgers in Leicester with 25 years of spice work behind every patty. Pick Original or Desi, beef or chicken, then collect or get it delivered.</p>
+        <div class="cta-row">
+          <a class="pill solid-white" href="#menu">Order now</a>
+          <a class="pill ghost-white" href="#menu">View menu</a>
+        </div>
+        <p class="hours">Fri · Sat · Sun, 5:00 to 10:30 pm · Leicester</p>
       </div>
-      <p class="hours">Fri · Sat · Sun, 5:00 to 10:30 pm · Leicester</p>
-    </div>
-    <div class="hero-art">
-      <img id="hero-img" src="images/tikka-hero.jpg" alt="Tikka Butter Melt smash burger" width="760" height="950" fetchpriority="high">
       <div class="special" id="special" hidden></div>
     </div>
   </section>
@@ -251,7 +252,7 @@
 <!-- Item dialog -->
 <dialog id="item-dialog" aria-labelledby="item-title">
   <form method="dialog" class="sheet" id="item-form">
-    <img class="item-img" id="item-img" alt="" hidden width="760" height="950">
+    <div class="item-shot"><img class="item-img" id="item-img" alt="" hidden width="560" height="420"></div>
     <div class="sheet-head"><h3 id="item-title"></h3><button class="x" value="cancel" aria-label="Close">×</button></div>
     <p class="fine" id="item-desc"></p>
     <div id="item-options"></div>

@@ -320,3 +320,53 @@ input[type=radio],input[type=checkbox]{width:22px;height:22px;flex:none;padding:
 @media(max-width:860px){.gallery{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:480px){.gallery{grid-template-columns:1fr}.hero-art>img{max-height:420px}}
 @media(prefers-reduced-motion:reduce){.card .shot img,.gal img{transition:none}.card:not(.sold):hover .shot img,.gal:hover img{transform:none}}
+
+/* full-width hero photo, never stretched (object-fit: cover) */
+.hero{position:relative;display:block;grid-template-columns:none;min-height:clamp(480px,68vh,680px);overflow:hidden;background:#1a1210;isolation:isolate}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 45%;z-index:-2;border-radius:0;box-shadow:none;max-height:none;aspect-ratio:auto}
+.hero-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(120,40,0,.92) 0%,rgba(170,60,0,.78) 34%,rgba(0,0,0,.18) 68%,rgba(0,0,0,.05) 100%)}
+.hero-inner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:inherit;padding-block:48px}
+.hero .hero-copy{background:none;padding:0;max-width:600px;color:#fff}
+.hero-art{display:none}
+.hero .special{position:static;flex:none;align-self:flex-end;width:300px;margin-bottom:0}
+@media(max-width:860px){
+  .hero{min-height:0}
+  .hero-shade{background:linear-gradient(180deg,rgba(120,40,0,.9) 0%,rgba(150,55,0,.78) 55%,rgba(0,0,0,.35) 100%)}
+  .hero-inner{flex-direction:column;align-items:flex-start;padding-block:36px 28px}
+  .hero .hero-copy{max-width:none}
+  .hero .special{width:100%;align-self:stretch}
+}
+
+/* whole burger always visible */
+.face img{transform:none;padding:5px}
+.ring{width:84px;height:84px}
+.st{width:92px}
+.item-shot{background:var(--cream);border-radius:12px;display:grid;place-items:center;aspect-ratio:4/3;max-height:240px;width:100%;overflow:hidden}
+.item-shot[hidden]{display:none}
+.item-img{width:100%;height:100%;max-height:none;object-fit:contain;object-position:center;mix-blend-mode:multiply;border-radius:0;padding:8px}
+
+/* basket thumbnails */
+.lines li.has-img{grid-template-columns:64px 1fr auto;column-gap:12px}
+.lines li.has-img .lt{grid-row:1/3;grid-column:1;width:64px;height:64px;border-radius:10px;background:var(--cream);display:grid;place-items:center;overflow:hidden}
+.lines li.has-img .lt img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;padding:3px}
+.lines li.has-img .n{grid-column:2}
+.lines li.has-img .lp{grid-column:3}
+.lines li.has-img .d{grid-column:2/4}
+.lines li.has-img .ctl{grid-column:1/-1}
+
+/* special strip along the bottom of the hero so it does not cover the burger */
+.hero-inner{padding-bottom:104px}
+.hero .special{position:absolute;left:0;right:0;bottom:0;width:auto;max-width:none;margin:0;border-radius:0;background:rgba(20,16,14,.86);color:#fff;box-shadow:none;backdrop-filter:blur(6px)}
+.hero .special .inner{flex-direction:row;align-items:center;justify-content:space-between;gap:16px;max-width:var(--maxw);margin:0 auto;padding:14px 20px;flex-wrap:wrap}
+.hero .special .inner>div{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 320px}
+.hero .special .eyebrow{color:#ffb066}
+.hero .special h3{color:#fff;font-size:1.5rem}
+.hero .special p{color:#e0d8ce;font-size:.92rem}
+.hero .special .btn{align-self:center;background:var(--brand);border-color:var(--brand);color:#fff}
+@media(max-width:860px){
+  .hero-inner{padding-bottom:28px;padding-top:32px}
+  .hero .special{position:static;align-self:stretch;width:auto;border-radius:12px;margin-top:4px}
+  .hero .special .inner{padding:14px 16px}
+  .hero .special .btn{width:100%}
+}
+.hero-inner{position:static}

@@ -99,8 +99,10 @@
     ul.innerHTML = '';
     cart.forEach((l, i) => {
       const li = document.createElement('li');
-      li.innerHTML = '<span class="n"></span><span class="lp"></span><span class="d"></span>' +
+      li.className = l.img ? 'has-img' : '';
+      li.innerHTML = (l.img ? '<span class="lt"><img alt="" loading="lazy" decoding="async"></span>' : '') + '<span class="n"></span><span class="lp"></span><span class="d"></span>' +
         '<div class="ctl"><div class="qty"><button type="button" data-a="m" aria-label="Fewer">−</button><output></output><button type="button" data-a="p" aria-label="More">+</button></div><button class="link" type="button" data-a="r">Remove</button></div>';
+      if (l.img) li.querySelector('.lt img').src = l.img;
       li.querySelector('.n').textContent = l.name;
       li.querySelector('.d').textContent = l.detail || '';
       li.querySelector('.lp').textContent = money(l.unit * l.qty);
@@ -165,7 +167,7 @@
     const t = C.tiers[b.tier];
     $('item-title').textContent = b.name;
     $('item-desc').textContent = b.desc;
-    setItemImg('images/' + b.id + '-hero.jpg', b.name);
+    setItemImg('images/' + b.id + '.jpg', b.name);
     let html = '';
     if (!b.veg) html += '<fieldset class="opt"><legend>Patty</legend>' + radios('patty', C.patties.map((p) => ({ label: p.label, note: p.note })), 1) + '</fieldset>';
     html += '<fieldset class="opt"><legend>Make it a meal?</legend>' + radios('meal', [
@@ -204,7 +206,7 @@
       if (patty) parts.push(patty);
       if (meal) parts.push('Meal deal: ' + $('o-fries').value + ' fries, ' + $('o-can').value);
       else parts.push('Burger only');
-      line = { key: ['b', cur.b.id, patty, meal, meal ? $('o-fries').value : '', meal ? $('o-can').value : ''].join('|'), name: cur.b.name, detail: parts.join(' · '), unit: unitPrice(), qty };
+      line = { key: ['b', cur.b.id, patty, meal, meal ? $('o-fries').value : '', meal ? $('o-can').value : ''].join('|'), name: cur.b.name, detail: parts.join(' · '), unit: unitPrice(), qty, img: 'images/' + cur.b.id + '.jpg' };
     } else {
       const choice = $('o-choice') ? $('o-choice').value : '';
       line = { key: ['s', cur.s.id, choice].join('|'), name: cur.s.name, detail: choice, unit: cur.s.price, qty };
@@ -485,7 +487,7 @@
   function renderHeroImg() {
     const b = C.burgers.find((x) => x.id === C.special);
     const im = $('hero-img');
-    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-hero.jpg'; im.alt = b.name + ' smash burger'; }
+    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg'; im.alt = b.name + ' smash burger'; }
   }
 
   /* ---------- boot ---------- */
