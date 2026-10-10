@@ -370,3 +370,15 @@ input[type=radio],input[type=checkbox]{width:22px;height:22px;flex:none;padding:
   .hero .special .btn{width:100%}
 }
 .hero-inner{position:static}
+
+/* images fill their tile with object-fit: contain, so no burger is ever cropped */
+.card .shot{position:relative;display:block}
+.card .shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:10px 14px;mix-blend-mode:multiply}
+.face{position:relative;display:block}
+.face img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:8px;transform:none;mix-blend-mode:multiply}
+.item-shot{position:relative;display:block}
+.item-shot .item-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:10px;mix-blend-mode:multiply}
+.lines li.has-img .lt{position:relative;display:block}
+.lines li.has-img .lt img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px;mix-blend-mode:multiply}
+.lines li.has-img .lt svg{position:absolute;inset:0;margin:auto;color:var(--brand)}
+.hero{min-height:clamp(480px,52vw,800px)}@media(max-width:860px){.hero{min-height:0}}

@@ -87,6 +87,21 @@
     toast.t = setTimeout(() => { t.hidden = true; }, 2200);
   }
 
+  const THUMB_SVG = {
+    fries: '<path d="M8 12l2-6M14 12l1-8M20 12l3-7M26 12l1-5"/><path d="M6 14h24l-3 18H9z"/>',
+    can: '<rect x="10" y="6" width="16" height="26" rx="3"/><path d="M10 12h16M10 26h16"/>',
+    dip: '<path d="M8 16h20l-2 14H10z"/><path d="M7 16h22"/><path d="M12 10c2-3 10-3 12 0"/>',
+    jar: '<rect x="9" y="12" width="18" height="20" rx="3"/><rect x="11" y="6" width="14" height="6" rx="1.5"/><path d="M13 20h10M13 25h10"/>',
+    bag: '<path d="M7 12h22l-2 20H9z"/><path d="M13 12a5 5 0 0 1 10 0"/>'
+  };
+  function lineThumb(l) {
+    const k = String(l.key || '').split('|');
+    if (k[0] === 'b' && k[1]) return { src: 'images/' + k[1] + '.jpg' };
+    let kind = 'bag';
+    if (k[0] === 's') kind = k[1] === 'can' ? 'can' : k[1] === 'dip' ? 'dip' : 'fries';
+    if (k[0] === 'p') kind = k[1] === 'spice' ? 'jar' : 'bag';
+    return { svg: '<svg viewBox="0 0 36 38" width="34" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + THUMB_SVG[kind] + '</svg>' };
+  }
   function renderCart() {
     const n = count();
     $('cart-count').textContent = n;
@@ -99,10 +114,10 @@
     ul.innerHTML = '';
     cart.forEach((l, i) => {
       const li = document.createElement('li');
-      li.className = l.img ? 'has-img' : '';
-      li.innerHTML = (l.img ? '<span class="lt"><img alt="" loading="lazy" decoding="async"></span>' : '') + '<span class="n"></span><span class="lp"></span><span class="d"></span>' +
+      const thumb = lineThumb(l);
+      li.className = 'has-img';
+      li.innerHTML = '<span class="lt">' + (thumb.src ? '<img alt="" decoding="async" src="' + esc(thumb.src) + '">' : thumb.svg) + '</span><span class="n"></span><span class="lp"></span><span class="d"></span>' +
         '<div class="ctl"><div class="qty"><button type="button" data-a="m" aria-label="Fewer">−</button><output></output><button type="button" data-a="p" aria-label="More">+</button></div><button class="link" type="button" data-a="r">Remove</button></div>';
-      if (l.img) li.querySelector('.lt img').src = l.img;
       li.querySelector('.n').textContent = l.name;
       li.querySelector('.d').textContent = l.detail || '';
       li.querySelector('.lp').textContent = money(l.unit * l.qty);
