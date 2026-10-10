@@ -50,6 +50,18 @@ window.DESI = {
   // This week's headline burger (menu id). Used on the home banner and the post kit.
   special: "tikka",
 
+  // Round "story" shortcuts above the menu. Ids are burger ids, icon is one of: burger, flame, leaf, stack, onion.
+  // Swap these for your real top sellers once you have a few weekends of orders.
+  favourites: [
+    { id: "og",       icon: "burger" },
+    { id: "naga",     icon: "flame" },
+    { id: "tikka",    icon: "burger" },
+    { id: "triple",   icon: "stack" },
+    { id: "paneer",   icon: "leaf" },
+    { id: "oklahoma", icon: "onion" },
+    { id: "bbq",      icon: "burger" }
+  ],
+
   // Prices in pounds, from the blueprint.
   tiers: {
     1: { name: "Classics",     burger: 4.99, meal: 6.99 },
