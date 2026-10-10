@@ -8,7 +8,8 @@
 <meta name="theme-color" content="#C84F00">
 <meta property="og:title" content="DesiSmash by Chef Hass">
 <meta property="og:description" content="Original & Spiced Smash Burgers. Leicester. Fri, Sat and Sun. Pre-order now.">
-<meta property="og:image" content="logos/neon-logo.jpg">
+<meta property="og:image" content="https://jaminhassan-debug.github.io/desismash-site/images/og-share.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="icon" href="logos/neon-logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,14 +25,16 @@
 <div class="announce" id="announce" hidden></div>
 <header class="top">
   <a class="brand" href="#top" aria-label="DesiSmash by Chef Hass, home"><b>DESI<span>SMASH</span></b><small>by Chef Hass</small></a>
-  <nav aria-label="Main">
+  <nav aria-label="Main" id="main-nav">
     <a href="#menu">Menu</a>
     <a href="#delivery">Delivery</a>
     <a href="#home">Cook at home</a>
     <a href="#hours">Hours</a>
     <a href="#faq">FAQ</a>
+    <a class="nav-order" href="#menu">Order now</a>
   </nav>
   <div class="top-actions">
+    <button class="menu-btn" id="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="main-nav"><span></span><span></span><span></span></button>
     <button class="cart-btn" id="open-cart" type="button" aria-label="Open basket">Basket <span id="cart-count">0</span></button>
     <a class="pill order" href="#menu">Order now</a>
   </div>
@@ -50,7 +53,7 @@
       <p class="hours">Fri · Sat · Sun, 5:00 to 10:30 pm · Leicester</p>
     </div>
     <div class="hero-art">
-      <img src="logos/packaging-set.jpg" alt="DesiSmash burger wrap, box and bag with the Chef Hass logo" width="1024" height="559">
+      <img id="hero-img" src="images/tikka-hero.jpg" alt="Tikka Butter Melt smash burger" width="760" height="950" fetchpriority="high">
       <div class="special" id="special" hidden></div>
     </div>
   </section>
@@ -70,12 +73,33 @@
       <h2>Our menu</h2>
       <p>Every burger is a double smash on a butter-toasted brioche bun. Make it a meal with seasoned fries and a can.</p>
     </div>
+    <div class="stories-wrap">
+      <p class="stories-title">Chef's favourites</p>
+      <div class="stories" id="stories" role="list"></div>
+    </div>
     <div class="chips" id="chips" role="tablist" aria-label="Menu filter"></div>
     <div id="burger-grid" class="cards"></div>
 
     <h3 class="sub">Sides, dips and drinks</h3>
     <div id="side-grid" class="cards"></div>
     <p class="fine" id="allergen"></p>
+  </section>
+
+  <section id="gallery" class="band-dark">
+    <div class="wrap block">
+      <div class="block-head on-dark">
+        <h2>Made to be messy</h2>
+        <p>Thin, crispy-edged patties, melted cheese and house sauces. Tap a photo to order that burger.</p>
+      </div>
+      <div class="gallery">
+        <button class="gal" type="button" data-burger="og"><img src="images/og-wide.jpg" alt="OG Smash cut in half" width="900" height="600" loading="lazy"><span>OG Smash</span></button>
+        <button class="gal" type="button" data-burger="tikka"><img src="images/tikka-wide.jpg" alt="Tikka Butter Melt with makhani butter sauce" width="900" height="600" loading="lazy"><span>Tikka Butter Melt</span></button>
+        <button class="gal" type="button" data-burger="bbq"><img src="images/bbq-wide.jpg" alt="Smoked BBQ Pitmaster with sauce poured over" width="900" height="600" loading="lazy"><span>Smoked BBQ Pitmaster</span></button>
+        <button class="gal" type="button" data-burger="naga"><img src="images/naga-wide.jpg" alt="Naga Firecracker with chilli and jalapeños" width="900" height="600" loading="lazy"><span>Naga Firecracker</span></button>
+        <button class="gal" type="button" data-burger="garlic"><img src="images/garlic-wide.jpg" alt="Garlic Chilli Crisp with crunchy chilli oil" width="900" height="600" loading="lazy"><span>Garlic Chilli Crisp</span></button>
+        <button class="gal" type="button" data-burger="triple"><img src="images/triple-wide.jpg" alt="The Triple Threat, three patties stacked" width="900" height="600" loading="lazy"><span>The Triple Threat</span></button>
+      </div>
+    </div>
   </section>
 
   <section id="how" class="band-grey">
@@ -227,6 +251,7 @@
 <!-- Item dialog -->
 <dialog id="item-dialog" aria-labelledby="item-title">
   <form method="dialog" class="sheet" id="item-form">
+    <img class="item-img" id="item-img" alt="" hidden width="760" height="950">
     <div class="sheet-head"><h3 id="item-title"></h3><button class="x" value="cancel" aria-label="Close">×</button></div>
     <p class="fine" id="item-desc"></p>
     <div id="item-options"></div>

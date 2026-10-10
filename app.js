@@ -153,6 +153,11 @@
     $('q-val').textContent = qty;
   }
 
+  function setItemImg(src, alt) {
+    const im = $('item-img');
+    im.hidden = !src;
+    if (src) { im.src = src; im.alt = alt; }
+  }
   function openBurger(id) {
     const b = C.burgers.find((x) => x.id === id);
     if (!b || C.soldOut.includes(id)) return;
@@ -160,6 +165,7 @@
     const t = C.tiers[b.tier];
     $('item-title').textContent = b.name;
     $('item-desc').textContent = b.desc;
+    setItemImg('images/' + b.id + '-hero.jpg', b.name);
     let html = '';
     if (!b.veg) html += '<fieldset class="opt"><legend>Patty</legend>' + radios('patty', C.patties.map((p) => ({ label: p.label, note: p.note })), 1) + '</fieldset>';
     html += '<fieldset class="opt"><legend>Make it a meal?</legend>' + radios('meal', [
@@ -179,6 +185,7 @@
     cur = { type: 'side', s }; qty = 1;
     $('item-title').textContent = s.name;
     $('item-desc').textContent = s.desc;
+    setItemImg('', '');
     $('item-options').innerHTML = s.choose ? selectHtml('o-choice', s.choose === 'fries' ? 'Seasoning' : s.choose === 'sauces' ? 'Sauce' : 'Drink', C[s.choose]) : '';
     $('item-options').onchange = null;
     refreshPrice();
@@ -219,7 +226,9 @@
     const list = C.burgers.filter((b) => filter === 'all' || (filter === 'veg' ? b.veg : String(b.tier) === filter));
     $('burger-grid').innerHTML = list.map((b) => {
       const t = C.tiers[b.tier], sold = C.soldOut.includes(b.id);
-      return '<article class="card' + (sold ? ' sold' : '') + '"><h3>' + esc(b.name) + '</h3>' +
+      return '<article class="card' + (sold ? ' sold' : '') + '">' +
+        '<div class="shot"><img src="images/' + b.id + '.jpg" alt="' + esc(b.name) + '" width="560" height="420" loading="lazy" decoding="async"></div>' +
+        '<h3>' + esc(b.name) + '</h3>' +
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
         '<div class="foot"><span class="price">' + money(t.burger) + '<small>meal ' + money(t.meal) + '</small></span>' +
@@ -443,6 +452,42 @@
   });
   renderShop();
 
+  /* ---------- favourites row and mobile menu ---------- */
+  const ICONS = {
+    burger: '<path d="M5 24c0-6 6-10 14-10s14 4 14 10z"/><path d="M4 28h30"/><path d="M6 32h26c0 3-3 5-6 5H12c-3 0-6-2-6-5z"/><circle cx="14" cy="19" r=".8"/><circle cx="19" cy="17.5" r=".8"/><circle cx="24" cy="19" r=".8"/>',
+    flame: '<path d="M19 4c1 6 8 9 8 17a8 8 0 0 1-16 0c0-4 2-6 4-8 0 3 1 4 2 4 0-5-1-8 2-13z"/>',
+    leaf: '<path d="M8 30C8 15 16 8 31 8c0 15-7 23-20 23"/><path d="M8 30L22 16"/>',
+    stack: '<path d="M5 14c0-5 6-8 14-8s14 3 14 8z"/><path d="M5 19h28"/><path d="M5 24h28"/><path d="M5 29h28"/><path d="M7 34h24c0 2-3 3-5 3H12c-2 0-5-1-5-3z"/>',
+    onion: '<ellipse cx="19" cy="22" rx="11" ry="12"/><path d="M19 10c-4 4-4 20 0 24"/><path d="M19 10c4 4 4 20 0 24"/><path d="M19 10V4"/>'
+  };
+  function renderStories() {
+    const el = $('stories');
+    const list = (C.favourites || []).map((f) => ({ f, b: C.burgers.find((x) => x.id === f.id) })).filter((x) => x.b && !C.soldOut.includes(x.b.id));
+    if (!list.length) { el.parentElement.hidden = true; return; }
+    el.innerHTML = list.map(({ f, b }) =>
+      '<button class="st" role="listitem" type="button" data-burger="' + esc(b.id) + '" aria-label="' + esc(b.name) + ', ' + money(C.tiers[b.tier].burger) + '">' +
+      '<span class="ring"><span class="face"><img src="images/' + esc(b.id) + '.jpg" alt="" width="560" height="420" loading="lazy" decoding="async"></span></span>' +
+      '<span class="st-name">' + esc(b.name.replace(/^The /, '')) + '</span>' +
+      '<span class="st-price">' + money(C.tiers[b.tier].burger) + '</span></button>').join('');
+  }
+  const menuBtn = $('menu-btn'), mainNav = $('main-nav');
+  function setMenu(open) {
+    mainNav.classList.toggle('open', open);
+    menuBtn.setAttribute('aria-expanded', String(open));
+    menuBtn.classList.toggle('on', open);
+  }
+  menuBtn.addEventListener('click', () => setMenu(!mainNav.classList.contains('open')));
+  mainNav.addEventListener('click', (e) => { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+  document.addEventListener('click', (e) => { if (!e.target.closest('.top')) setMenu(false); });
+
+  /* ---------- hero photo follows this week's special ---------- */
+  function renderHeroImg() {
+    const b = C.burgers.find((x) => x.id === C.special);
+    const im = $('hero-img');
+    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-hero.jpg'; im.alt = b.name + ' smash burger'; }
+  }
+
   /* ---------- boot ---------- */
   $('allergen').textContent = C.allergenNote;
   $('faq-all').textContent = C.allergenNote;
@@ -452,7 +497,7 @@
   $('join').href = C.whatsapp ? 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi Chef Hass, add me to the DesiSmash drop list') : '#';
   if (!C.whatsapp) $('join').setAttribute('aria-disabled', 'true');
   renderStatus(); setInterval(renderStatus, 60000);
-  renderChips(); renderBurgers(); renderSides(); renderSpecial();
+  renderChips(); renderBurgers(); renderSides(); renderSpecial(); renderStories(); renderHeroImg();
   linkRow($('apps-row'), [['Uber Eats', 'Order on Uber Eats', C.apps.uberEats], ['Deliveroo', 'Order on Deliveroo', C.apps.deliveroo], ['Just Eat', 'Order on Just Eat', C.apps.justEat]]);
   linkRow($('social-row'), [['Instagram', 'Follow for weekly drops', C.social.instagram], ['TikTok', 'Watch the smash', C.social.tiktok], ['Facebook', 'Join the page', C.social.facebook]]);
   fillDays(); renderCart();
