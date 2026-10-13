@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>DesiSmash Post Kit</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261010c">
+<link rel="stylesheet" href="styles.css?v=20261013e">
 <style>
   body{padding-bottom:40px}
   .wrap{max-width:760px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:18px}
@@ -46,7 +46,7 @@
   <div id="out" style="display:flex;flex-direction:column;gap:14px"></div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-<script src="config.js?v=20261010c"></script>
+<script src="config.js?v=20261013e"></script>
 <script>
 (function () {
   const C = window.DESI, $ = (i) => document.getElementById(i);
@@ -76,6 +76,7 @@
     const order = url ? 'Pre-order: ' + url : 'Pre-order on WhatsApp (link in bio).';
     const posts = [
       ['Instagram / Facebook post', ['This weekend\'s special: ' + b.name.toUpperCase(), '', body, '', extra, open, order, '', tags].filter((x, i, a) => x !== '' || a[i - 1] !== '').join('\n')],
+      ['Facebook page announcement', ['DesiSmash by Chef Hass is open in Leicester this ' + dayTxt + '!', '', 'Smash burgers with a choice of Original or Desi spiced patties, beef or chicken. 25 years of spice work in every one.', '', 'Burgers from £' + C.tiers[1].burger.toFixed(2) + ', meal deals from £' + C.tiers[1].meal.toFixed(2) + '. Collect or get it delivered. Free delivery under a mile.', open, order, extra].filter((x, i, a) => x !== '' || a[i - 1] !== '').join('\n')],
       ['TikTok caption', [b.name + ' smashed fresh. 25 years of spice in one patty. ' + open, order.replace('Pre-order: ', 'Order: '), '#desismash #smashburger #leicester #leicesterfood #chefhass #foodtok'].join('\n')],
       ['WhatsApp status / broadcast', ['*DesiSmash by Chef Hass*', '*' + b.name + '* this weekend', 'From ' + price, open, extra, order].filter(Boolean).join('\n')],
       ['Story text (short)', [b.name.toUpperCase(), open.replace('Open ', ''), 'Order via link sticker'].join('\n')],

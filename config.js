@@ -44,6 +44,9 @@ window.DESI = {
   // Turn items off for the weekend: list menu ids or side ids, e.g. ["truffle", "paneer"].
   soldOut: [],
 
+  // Closed weekend switch. Set on: true to stop orders and show the message everywhere. Change back to false to reopen.
+  closed: { on: false, message: "We are closed this weekend. Back next Friday at 5 pm." },
+
   // Banner above the header. Empty string hides it.
   announcement: "Launch weekend: first 50 orders get a free dip pot",
 
@@ -77,18 +80,21 @@ window.DESI = {
   ],
 
   burgers: [
-    { id: "og",       tier: 1, name: "The OG Smash",            heat: 0, desc: "American cheese, OG house sauce, pickles, diced white onion." },
-    { id: "oklahoma", tier: 1, name: "The Oklahoma Onion",      heat: 0, desc: "Onions smashed into the patty, double American cheese, mustard mayo." },
-    { id: "naga",     tier: 1, name: "The Naga Firecracker",    heat: 3, desc: "Pepper jack, naga chilli mayo, pickled jalapeños, crispy shallots." },
-    { id: "garlic",   tier: 1, name: "The Garlic Chilli Crisp", heat: 2, desc: "Chilli-jack, roasted garlic aioli, chilli crisp oil, iceberg." },
-    { id: "bbq",      tier: 1, name: "Smoked BBQ Pitmaster",    heat: 0, desc: "Aged cheddar, smoky BBQ glaze, pickles, crispy onion ring." },
-    { id: "tikka",    tier: 2, name: "The Tikka Butter Melt",   heat: 1, desc: "Spiced cheese, makhani butter glaze, mint-coriander chutney mayo, red onion." },
-    { id: "stampede", tier: 2, name: "Caramelized Stampede",    heat: 0, desc: "Smoked cheddar, slow-cooked caramelised onions, BBQ mayo, turkey bacon." },
-    { id: "bombay",   tier: 2, name: "Tamarind & Bombay Street",heat: 1, desc: "Aged cheddar, tamarind chutney, coriander lime sauce, crushed papri crisp." },
-    { id: "truffle",  tier: 2, name: "Truffle & Wild Mushroom", heat: 0, desc: "Swiss cheese, garlic and thyme mushrooms, truffle mayo, spinach." },
-    { id: "paneer",   tier: 2, name: "Paneer Tikka Melt",       heat: 1, veg: true, desc: "Tawa-seared paneer in tikka marinade, pepper jack, mint chutney mayo, pickled red onion." },
-    { id: "triple",   tier: 3, name: "The Triple Threat",       heat: 0, desc: "Three 2.5 oz smashed patties, three cheese slices, double pickles, extra OG sauce." }
+    { id: "og",       tier: 1, name: "The OG Smash",            heat: 0, sauces: ["OG house sauce"], remove: ["American cheese", "Pickles", "Diced white onion"], desc: "American cheese, OG house sauce, pickles, diced white onion." },
+    { id: "oklahoma", tier: 1, name: "The Oklahoma Onion",      heat: 0, sauces: ["Mustard mayo"], remove: ["Smashed onions", "Extra cheese slice"], desc: "Onions smashed into the patty, double American cheese, mustard mayo." },
+    { id: "naga",     tier: 1, name: "The Naga Firecracker",    heat: 3, sauces: ["Naga chilli mayo"], remove: ["Pepper jack", "Pickled jalapeños", "Crispy shallots"], desc: "Pepper jack, naga chilli mayo, pickled jalapeños, crispy shallots." },
+    { id: "garlic",   tier: 1, name: "The Garlic Chilli Crisp", heat: 2, sauces: ["Roasted garlic aioli", "Chilli crisp oil"], remove: ["Chilli-jack cheese", "Iceberg lettuce"], desc: "Chilli-jack, roasted garlic aioli, chilli crisp oil, iceberg." },
+    { id: "bbq",      tier: 1, name: "Smoked BBQ Pitmaster",    heat: 0, sauces: ["Smoky BBQ glaze"], remove: ["Aged cheddar", "Pickles", "Onion ring"], desc: "Aged cheddar, smoky BBQ glaze, pickles, crispy onion ring." },
+    { id: "tikka",    tier: 2, name: "The Tikka Butter Melt",   heat: 1, sauces: ["Mint-coriander chutney mayo", "Makhani butter glaze"], remove: ["Spiced cheese", "Red onion"], desc: "Spiced cheese, makhani butter glaze, mint-coriander chutney mayo, red onion." },
+    { id: "stampede", tier: 2, name: "Caramelized Stampede",    heat: 0, sauces: ["Smoky BBQ mayo"], remove: ["Smoked cheddar", "Caramelised onions", "Turkey bacon"], desc: "Smoked cheddar, slow-cooked caramelised onions, BBQ mayo, turkey bacon." },
+    { id: "bombay",   tier: 2, name: "Tamarind & Bombay Street",heat: 1, sauces: ["Coriander lime sauce", "Tamarind chutney"], remove: ["Aged cheddar", "Papri crisp"], desc: "Aged cheddar, tamarind chutney, coriander lime sauce, crushed papri crisp." },
+    { id: "truffle",  tier: 2, name: "Truffle & Wild Mushroom", heat: 0, sauces: ["Truffle mayo"], remove: ["Swiss cheese", "Garlic and thyme mushrooms", "Spinach"], desc: "Swiss cheese, garlic and thyme mushrooms, truffle mayo, spinach." },
+    { id: "paneer",   tier: 2, name: "Paneer Tikka Melt",       heat: 1, veg: true, sauces: ["Mint chutney mayo", "Tamarind glaze"], remove: ["Pepper jack", "Pickled red onion"], desc: "Tawa-seared paneer in tikka marinade, pepper jack, mint chutney mayo, pickled red onion." },
+    { id: "triple",   tier: 3, name: "The Triple Threat",       heat: 0, sauces: ["OG house sauce"], remove: ["American cheese", "Pickles", "Diced white onion"], desc: "Three 2.5 oz smashed patties, three cheese slices, double pickles, extra OG sauce." }
   ],
+
+  // Free changes a customer can ask for. Each burger lists its "sauces" and its other "remove" items (toppings, cheese).
+  customise: { noteMax: 80 },
 
   fries: ["Masala dust", "Peri-peri", "Sea salt"],
   sauces: ["OG House", "Fiery Naga Mayo", "Mint-Coriander Chutney", "Roasted Garlic Aioli", "Smoky BBQ Glaze"],
@@ -101,6 +107,12 @@ window.DESI = {
     { id: "dip",     name: "Dip pot (2 oz)",          price: 0.80, desc: "Pick any of the five house sauces.", choose: "sauces" },
     { id: "can",     name: "Can (330ml)",             price: 1.50, desc: "Cold from the fridge.", choose: "cans" }
   ],
+
+  // Private order database (Supabase). The key is a public "publishable" key: it can only place orders.
+  orders: {
+    url: "https://agtkkcyaudirqvodxqjd.supabase.co",
+    key: "sb_publishable_GQDorFgoz6UzOBPsd7UQUw_9eZusbCo"
+  },
 
   // Email capture. Paste a form endpoint (Formspree, Web3Forms, or a Google Apps Script URL) so sign-ups reach you.
   // See README, "Collecting emails". Leave empty and the recipe still downloads, but no emails are saved.

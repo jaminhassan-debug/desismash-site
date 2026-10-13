@@ -8,6 +8,9 @@
   const DOWFULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+  const isClosed = () => !!(C.closed && C.closed.on);
+  const closedMsg = () => (C.closed && C.closed.message) || 'We are closed right now.';
+
   /* ---------- UK time ---------- */
   function londonNow() {
     const parts = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
@@ -45,6 +48,7 @@
 
   function renderStatus() {
     const el = $('status');
+    if (isClosed()) { el.className = 'status closed'; el.textContent = closedMsg(); return; }
     const now = londonNow();
     const dow = new Date(Date.UTC(now.y, now.m - 1, now.d)).getUTCDay();
     const h = C.hours[dow];
@@ -177,6 +181,7 @@
     if (src) { im.src = src; im.alt = alt; }
   }
   function openBurger(id) {
+    if (isClosed()) { toast(closedMsg()); return; }
     const b = C.burgers.find((x) => x.id === id);
     if (!b || C.soldOut.includes(id)) return;
     cur = { type: 'burger', b }; qty = 1;
@@ -191,13 +196,53 @@
       { label: 'Meal deal', note: 'Burger, seasoned fries and a can', price: money(t.meal) }
     ], 1) + '</fieldset>';
     html += '<div id="meal-extra">' + selectHtml('o-fries', 'Fries seasoning', C.fries) + selectHtml('o-can', 'Can', C.cans) + '</div>';
+    const hasS = b.sauces && b.sauces.length, hasR = b.remove && b.remove.length;
+    if (hasS || hasR || (C.customise && C.customise.noteMax)) {
+      html += '<details class="custom" id="custom-box"><summary><span class="cbtn">Customise</span><span class="ccount" id="custom-count"></span></summary><div class="custom-body">';
+      if (hasS) {
+        html += '<fieldset class="opt"><legend>Sauces</legend><div class="rm-grid">' +
+          '<label class="rm all"><input type="checkbox" id="o-nosauce"><span>No sauce at all</span></label>' +
+          b.sauces.map((r, i) => '<label class="rm"><input type="checkbox" name="rs" value="' + i + '"><span>No ' + esc(r) + '</span></label>').join('') + '</div></fieldset>';
+      }
+      if (hasR) {
+        html += '<fieldset class="opt"><legend>Toppings and cheese</legend><div class="rm-grid">' +
+          b.remove.map((r, i) => '<label class="rm"><input type="checkbox" name="rm" value="' + i + '"><span>No ' + esc(r.toLowerCase()) + '</span></label>').join('') + '</div></fieldset>';
+      }
+      if (C.customise && C.customise.noteMax) html += '<label class="note-l">Anything else? <input id="o-note" maxlength="' + C.customise.noteMax + '" placeholder="e.g. well done, cut in half"></label>';
+      html += '<p class="fine">Leaving something off does not make a burger allergen-free. Everything is cooked on shared equipment. Tell us about allergies in the note.</p>';
+      html += '</div></details>';
+    }
     $('item-options').innerHTML = html;
-    $('item-options').onchange = refreshPrice;
+    $('item-options').onchange = (ev) => {
+      if (ev.target && ev.target.id === 'o-nosauce') document.querySelectorAll('input[name=rs]').forEach((x) => { x.checked = ev.target.checked; });
+      else if (ev.target && ev.target.name === 'rs' && !ev.target.checked && $('o-nosauce')) $('o-nosauce').checked = false;
+      refreshPrice(); updateCustomCount();
+    };
+    $('item-options').oninput = updateCustomCount;
     refreshPrice();
     dlg.showModal();
   }
+  function customMods() {
+    const b = cur && cur.b;
+    const out = [];
+    if (!b) return out;
+    const all = $('o-nosauce') && $('o-nosauce').checked;
+    if (all) out.push('No sauce');
+    else document.querySelectorAll('input[name=rs]:checked').forEach((x) => out.push('No ' + b.sauces[+x.value]));
+    document.querySelectorAll('input[name=rm]:checked').forEach((x) => out.push('No ' + String(b.remove[+x.value]).toLowerCase()));
+    const n = $('o-note') && $('o-note').value.trim();
+    if (n) out.push('Note: ' + n);
+    return out;
+  }
+  function updateCustomCount() {
+    const el = $('custom-count');
+    if (!el) return;
+    const n = customMods().length;
+    el.textContent = n ? n + ' change' + (n > 1 ? 's' : '') : '';
+  }
 
   function openSide(id) {
+    if (isClosed()) { toast(closedMsg()); return; }
     const s = C.sides.find((x) => x.id === id);
     if (!s || C.soldOut.includes(id)) return;
     cur = { type: 'side', s }; qty = 1;
@@ -222,10 +267,12 @@
       if (patty) parts.push(patty);
       if (meal) parts.push('Meal deal: ' + $('o-fries').value + ' fries, ' + $('o-can').value);
       else parts.push('Burger only');
-      line = { key: ['b', cur.b.id, patty, meal, meal ? $('o-fries').value : '', meal ? $('o-can').value : ''].join('|'), name: cur.b.name, detail: parts.join(' · '), unit: unitPrice(), qty, img: 'images/' + cur.b.id + '.jpg' };
+      const mods = customMods();
+      if (mods.length) parts.push(mods.join(', '));
+      line = { key: ['b', cur.b.id, patty, meal, meal ? $('o-fries').value : '', meal ? $('o-can').value : '', mods.join('+')].join('|'), name: cur.b.name, detail: parts.join(' · '), unit: unitPrice(), qty, img: 'images/' + cur.b.id + '.jpg', id: cur.b.id, kind: 'burger', meal, patty, mods };
     } else {
       const choice = $('o-choice') ? $('o-choice').value : '';
-      line = { key: ['s', cur.s.id, choice].join('|'), name: cur.s.name, detail: choice, unit: cur.s.price, qty };
+      line = { key: ['s', cur.s.id, choice].join('|'), name: cur.s.name, detail: choice, unit: cur.s.price, qty, id: cur.s.id, kind: 'side' };
     }
     dlg.close();
     addLine(line);
@@ -250,7 +297,7 @@
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
         '<div class="foot"><span class="price">' + money(t.burger) + '<small>meal ' + money(t.meal) + '</small></span>' +
-        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : 'Add') + '</button></div></article>';
+        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : isClosed() ? 'Closed' : 'Add') + '</button></div></article>';
     }).join('');
   }
   function renderSides() {
@@ -397,13 +444,58 @@
       ta.remove(); return ok;
     }
   }
+  /* ---------- save the order to the private kitchen database ---------- */
+  function lineForDb(l) {
+    const k = String(l.key || '').split('|');
+    const id = l.id || k[1];
+    const out = { id, qty: l.qty };
+    if (k[0] === 'b') {
+      out.meal = l.meal != null ? !!l.meal : k[3] === 'true';
+      out.patty = l.patty != null ? l.patty : (k[2] || null);
+      out.mods = Array.isArray(l.mods) ? l.mods : [];
+      out.detail = l.detail || '';
+    } else { out.detail = l.detail || ''; }
+    return out;
+  }
+  async function saveOrder() {
+    const O = C.orders;
+    if (!O || !O.url || !O.key) return { skipped: true };
+    const days = openDays(3);
+    const d = days[+$('f-day').value] || days[0];
+    const t = +$('f-slot').value;
+    const del = mode() === 'Delivery';
+    const body = { p: {
+      name: $('f-name').value.trim(), phone: $('f-phone').value.trim(), email: $('f-email').value.trim(),
+      marketing: $('f-mkt').checked, mode: mode(),
+      slot_local: d.date.toISOString().slice(0, 10) + 'T' + clock(t),
+      address: del ? $('f-addr').value.trim() : '', postcode: del ? $('f-post').value.trim() : '',
+      delivery_fee: del && D.info ? D.info.fee : 0, delivery_miles: del && D.info ? +D.info.miles.toFixed(2) : null,
+      notes: $('f-note').value.trim(), source: 'website', items: cart.map(lineForDb)
+    } };
+    try {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 10000);
+      const r = await fetch(O.url + '/rest/v1/rpc/place_order', {
+        method: 'POST', signal: ctl.signal,
+        headers: { 'Content-Type': 'application/json', apikey: O.key, Authorization: 'Bearer ' + O.key },
+        body: JSON.stringify(body)
+      });
+      clearTimeout(timer);
+      const j = await r.json();
+      if (!r.ok) return { ok: false, error: j.message || 'Order not saved' };
+      return { ok: true, number: j.number };
+    } catch (e) { return { ok: false, error: 'offline' }; }
+  }
+
   $('order-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!validate()) return;
     const msg = buildMessage();
+    const saving = saveOrder();
     if (!C.whatsapp) {
       const ok = await copyText(msg);
       toast(ok ? 'Order copied. Send it to Chef Hass on WhatsApp.' : 'Ordering number not set up yet.');
+      await saving;
       return;
     }
     if ($('f-mkt').checked && /.+@.+\..+/.test($('f-email').value)) sendLead({ name: $('f-name').value.trim(), email: $('f-email').value.trim(), phone: $('f-phone').value.trim(), marketing: true, source: 'order' });
@@ -412,11 +504,14 @@
     a.target = '_blank'; a.rel = 'noopener';
     document.body.appendChild(a); a.click(); a.remove();
     $('send-note').textContent = 'WhatsApp opened with your order ready to send. Press send there. Chef Hass confirms by reply.';
+    const r = await saving;
+    if (r.ok) $('send-note').textContent = 'Order #' + r.number + ' received. Press send in WhatsApp so Chef Hass can confirm it.';
+    else if (!r.skipped) $('send-note').textContent += ' We could not save the order online, so please make sure the WhatsApp message is sent.';
   });
   $('copy-order').onclick = async () => { if (validate()) toast((await copyText(buildMessage())) ? 'Order copied' : 'Could not copy'); };
   $('clear-cart').onclick = () => { cart = []; save(); renderCart(); };
 
-  $('open-cart').onclick = $('cartbar-btn').onclick = () => { fillDays(); renderCart(); $('cart-dialog').showModal(); };
+  $('open-cart').onclick = $('cartbar-btn').onclick = () => { loadSettings(); fillDays(); renderCart(); $('cart-dialog').showModal(); };
   $('cart-close').onclick = () => $('cart-dialog').close();
 
   $('share-site').onclick = async () => {
@@ -468,7 +563,8 @@
   document.addEventListener('click', (e) => {
     const b = e.target.closest('[data-shop]'); if (!b) return;
     const p = C.shop.find((x) => x.id === b.dataset.shop);
-    addLine({ key: 'p|' + p.id, name: p.name, detail: p.size + ' · with your weekend order', unit: p.price, qty: 1 });
+    if (isClosed()) { toast(closedMsg()); return; }
+    addLine({ key: 'p|' + p.id, name: p.name, detail: p.size + ' · with your weekend order', unit: p.price, qty: 1, id: p.id, kind: 'product' });
   });
   renderShop();
 
@@ -508,12 +604,51 @@
     if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg'; im.alt = b.name + ' smash burger'; }
   }
 
+  /* ---------- delivery on/off (set from the kitchen screen) ---------- */
+  function applyDelivery(on) {
+    C.deliveryOn = on;
+    const radio = document.querySelector('input[name=mode][value=Delivery]');
+    const seg = radio && radio.closest('label');
+    if (seg) seg.hidden = !on;
+    document.querySelectorAll('.del-off').forEach((el) => { el.hidden = on; });
+    const calc = document.querySelector('.calc');
+    if (calc) calc.hidden = !on;
+    if (!on) {
+      const col = document.querySelector('input[name=mode][value=Collection]');
+      if (col && !col.checked) { col.checked = true; col.dispatchEvent(new Event('change', { bubbles: true })); }
+      $('addr').hidden = true;
+      $('faq-del').textContent = 'We are not delivering right now. Collection only, and it is always free.';
+      $('area').textContent = 'Delivery is switched off right now. Collection is free.';
+      if (!isClosed()) { $('announce').textContent = 'Collection only right now. Delivery is switched off.'; $('announce').hidden = false; }
+    } else {
+      $('faq-del').textContent = C.deliveryArea;
+      $('area').textContent = 'Delivery: ' + C.deliveryArea;
+      if (!isClosed()) { if (C.announcement) { $('announce').textContent = C.announcement; $('announce').hidden = false; } else { $('announce').hidden = true; } }
+    }
+    renderCart();
+  }
+  async function loadSettings() {
+    const O = C.orders;
+    if (!O || !O.url || !O.key) return;
+    try {
+      const r = await fetch(O.url + '/rest/v1/rpc/public_settings', {
+        method: 'POST', cache: 'no-store',
+        headers: { 'Content-Type': 'application/json', apikey: O.key, Authorization: 'Bearer ' + O.key }, body: '{}'
+      });
+      if (!r.ok) return;
+      const s = await r.json();
+      const on = s.delivery_enabled !== false;
+      if (on !== (C.deliveryOn !== false)) applyDelivery(on);
+    } catch (e) { /* keep the last known state */ }
+  }
+
   /* ---------- boot ---------- */
   $('allergen').textContent = C.allergenNote;
   $('faq-all').textContent = C.allergenNote;
   $('faq-del').textContent = C.deliveryArea;
   $('area').textContent = 'Delivery: ' + C.deliveryArea;
-  if (C.announcement) { $('announce').textContent = C.announcement; $('announce').hidden = false; }
+  if (isClosed()) { $('announce').textContent = closedMsg(); $('announce').hidden = false; document.body.classList.add('is-closed'); }
+  else if (C.announcement) { $('announce').textContent = C.announcement; $('announce').hidden = false; }
   $('join').href = C.whatsapp ? 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi Chef Hass, add me to the DesiSmash drop list') : '#';
   if (!C.whatsapp) $('join').setAttribute('aria-disabled', 'true');
   renderStatus(); setInterval(renderStatus, 60000);
@@ -521,4 +656,6 @@
   linkRow($('apps-row'), [['Uber Eats', 'Order on Uber Eats', C.apps.uberEats], ['Deliveroo', 'Order on Deliveroo', C.apps.deliveroo], ['Just Eat', 'Order on Just Eat', C.apps.justEat]]);
   linkRow($('social-row'), [['Instagram', 'Follow for weekly drops', C.social.instagram], ['TikTok', 'Watch the smash', C.social.tiktok], ['Facebook', 'Join the page', C.social.facebook]]);
   fillDays(); renderCart();
+  loadSettings();
+  setInterval(loadSettings, 120000);
 })();

@@ -34,6 +34,7 @@ This repository is the website. GitHub Pages publishes it, and every commit to `
 - **Live site:** https://jaminhassan-debug.github.io/desismash-site/
 - **Edit a file:** open it on GitHub, press the pencil icon, change it, press Commit changes.
 - **Weekly changes:** edit `config.js` (special, sold-out list, announcement) and commit.
+- **Closing for a weekend:** in `config.js` set `closed: { on: true, ... }`. The site then shows your message, and every Add button says Closed. Set it back to `false` to reopen.
 - **Source of truth:** this repo only holds public files. The paid recipe book, its source and the business blueprint live in the separate private repo `desismash-private`. Never add them here.
 
 Pages setup (already done): Settings, Pages, Deploy from a branch, `main`, `/ (root)`.
@@ -94,3 +95,12 @@ The text of both PDFs is in `recipe-pdf-src/build.py` in the private `desismash-
 - Confirm allergen information with Chef Hass's actual recipes. Customers must be told about the 14 major allergens.
 - Test one full order on your phone, including the WhatsApp step.
 - UK consumer law applies to online orders: show your business name and contact details on the site.
+
+## Kitchen screen and customer records (private)
+
+Every order is saved to a private database (Supabase, London) as well as going to WhatsApp.
+
+- **Kitchen screen:** `/kitchen/` on this site. Sign in with a staff email. It shows tickets in priority order, a cook list and live updates, with Orders and Customers tabs and CSV export.
+- **Adding staff:** add the email to the `staff` table in Supabase (Table Editor), then that person signs in on `/kitchen/` (use Create account once). Nobody else can see any data.
+- **Marketing:** the Customers tab shows who opted in. Only email people marked "Opted in".
+- **Keys:** the key in `config.js` can only place orders. It cannot read anything.

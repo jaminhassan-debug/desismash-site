@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261010c">
+<link rel="stylesheet" href="styles.css?v=20261013e">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FoodEstablishment","name":"DesiSmash by Chef Hass","servesCuisine":["Burgers","Indian fusion"],"areaServed":"Leicester","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Friday","Saturday","Sunday"],"opens":"17:00","closes":"22:30"}]}
 </script>
@@ -114,6 +114,7 @@
         <li><b>Choose your slot</b><span>Friday, Saturday or Sunday, 30-minute slots from 5 pm.</span></li>
         <li><b>Confirm on WhatsApp</b><span>Your order lands in our WhatsApp. We reply to confirm. Pay on collection or delivery.</span></li>
       </ol>
+      <p class="del-off note-box" hidden>Delivery is switched off right now. Collection is always free.</p>
       <div class="calc">
         <h3>Delivery fee calculator</h3>
         <div class="bands" id="bands"></div>
@@ -239,6 +240,7 @@
     <div>
       <b>Legal</b>
       <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
       <a href="#allergen">Allergen information</a>
     </div>
   </div>
@@ -281,6 +283,7 @@
           <label><input type="radio" name="mode" value="Collection" checked> Collection</label>
           <label><input type="radio" name="mode" value="Delivery"> Delivery</label>
         </fieldset>
+        <p class="del-off note-box" hidden>Delivery is off right now, so this order is for collection.</p>
         <div class="two">
           <label>Day<select id="f-day" required></select></label>
           <label>Time<select id="f-slot" required></select></label>
@@ -309,7 +312,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="config.js?v=20261010c"></script>
-<script src="app.js?v=20261010c"></script>
+<script src="config.js?v=20261013e"></script>
+<script src="app.js?v=20261013e"></script>
 </body>
 </html>
