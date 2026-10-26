@@ -113,8 +113,9 @@
     $('cartbar-count').textContent = n + (n === 1 ? ' item' : ' items');
     $('cartbar-total').textContent = money(subtotal());
     $('cartbar').hidden = n === 0;
-    $('cart-empty').hidden = n > 0;
-    $('checkout').hidden = n === 0;
+    const confirming = !$('confirm').hidden;
+    $('cart-empty').hidden = n > 0 || confirming;
+    $('checkout').hidden = n === 0 || confirming;
     const ul = $('cart-lines');
     ul.innerHTML = '';
     cart.forEach((l, i) => {
@@ -491,27 +492,75 @@
     e.preventDefault();
     if (!validate()) return;
     const msg = buildMessage();
+    const snap = orderSnapshot();
     const saving = saveOrder();
-    if (!C.whatsapp) {
-      const ok = await copyText(msg);
-      toast(ok ? 'Order copied. Send it to Chef Hass on WhatsApp.' : 'Ordering number not set up yet.');
-      await saving;
-      return;
-    }
+    const waUrl = C.whatsapp ? 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg) : '';
     if ($('f-mkt').checked && /.+@.+\..+/.test($('f-email').value)) sendLead({ name: $('f-name').value.trim(), email: $('f-email').value.trim(), phone: $('f-phone').value.trim(), marketing: true, source: 'order' });
-    const a = document.createElement('a');
-    a.href = 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg);
-    a.target = '_blank'; a.rel = 'noopener';
-    document.body.appendChild(a); a.click(); a.remove();
-    $('send-note').textContent = 'WhatsApp opened with your order ready to send. Press send there. Chef Hass confirms by reply.';
+    if (waUrl) {
+      const a = document.createElement('a');
+      a.href = waUrl; a.target = '_blank'; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); a.remove();
+    } else {
+      await copyText(msg);
+    }
+    showConfirmation(snap, msg, waUrl, null);
+    // The order is now on screen as confirmed-received; the basket is cleared so it cannot be sent twice by accident.
+    cart = []; save(); renderCart();
+    $('order-form').reset();
     const r = await saving;
-    if (r.ok) $('send-note').textContent = 'Order #' + r.number + ' received. Press send in WhatsApp so Chef Hass can confirm it.';
-    else if (!r.skipped) $('send-note').textContent += ' We could not save the order online, so please make sure the WhatsApp message is sent.';
+    showConfirmation(snap, msg, waUrl, r);
   });
+
+  /* ---------- on-screen order confirmation ---------- */
+  function orderSnapshot() {
+    const days = openDays(3);
+    const d = days[+$('f-day').value] || days[0];
+    const del = delivery();
+    return {
+      name: $('f-name').value.trim(), phone: $('f-phone').value.trim(), email: $('f-email').value.trim(),
+      mode: mode(), when: (d ? dayLabel(d) : '') + ' at ' + fmtTime(+$('f-slot').value),
+      address: mode() === 'Delivery' ? $('f-addr').value.trim() + ', ' + $('f-post').value.trim() : '',
+      lines: cart.map((l) => ({ name: l.qty + 'x ' + l.name + (l.detail ? ' (' + l.detail + ')' : ''), price: l.unit * l.qty })),
+      delivery: del, total: subtotal() + del
+    };
+  }
+  function showConfirmation(s, msg, waUrl, r) {
+    const saved = r && r.ok;
+    const failed = r && !r.ok && !r.skipped;
+    $('cart-title').textContent = 'Order sent';
+    $('cart-empty').hidden = true; $('checkout').hidden = true; $('cart-lines').hidden = true;
+    $('cf-title').textContent = 'Thanks ' + s.name.split(' ')[0] + ', we have your order';
+    const st = $('cf-status');
+    if (!waUrl) st.textContent = 'Your order text is copied. Paste it to Chef Hass on WhatsApp to finish.';
+    else if (saved) st.textContent = 'Order #' + r.number + ' received. Press send in WhatsApp so Chef Hass can confirm it. We will reply to confirm.';
+    else if (failed) st.textContent = 'We could not save your order online. Please make sure the WhatsApp message is sent, otherwise we will not see it.';
+    else st.textContent = 'Saving your order… Press send in WhatsApp so Chef Hass can confirm it. We will reply to confirm.';
+    const rows = [['Name', s.name], ['Mobile', s.phone]];
+    if (s.email) rows.push(['Email', s.email]);
+    rows.push([s.mode, s.when]);
+    if (s.address) rows.push(['Address', s.address]);
+    $('cf-details').innerHTML = rows.map((x) => '<dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd>').join('');
+    $('cf-lines').innerHTML = s.lines.map((l) => '<li><span>' + esc(l.name) + '</span><span>' + money(l.price) + '</span></li>').join('') +
+      (s.mode === 'Delivery' ? '<li><span>Delivery</span><span>' + (s.delivery ? money(s.delivery) : 'Free') + '</span></li>' : '');
+    $('cf-total').textContent = money(s.total);
+    $('cf-pay').textContent = 'You pay on ' + (s.mode === 'Delivery' ? 'delivery' : 'collection') + '. Your order is only confirmed once Chef Hass replies on WhatsApp.';
+    const wa = $('cf-wa');
+    if (waUrl) { wa.href = waUrl; wa.hidden = false; } else wa.hidden = true;
+    $('cf-copy').onclick = async () => toast((await copyText(msg)) ? 'Order copied' : 'Could not copy');
+    $('confirm').hidden = false;
+    if (!r) $('confirm').focus();
+  }
+  function resetCartView() {
+    $('confirm').hidden = true;
+    $('cart-title').textContent = 'Your basket';
+    $('cart-lines').hidden = false;
+    renderCart();
+  }
+  $('cf-done').onclick = () => { $('cart-dialog').close(); };
   $('copy-order').onclick = async () => { if (validate()) toast((await copyText(buildMessage())) ? 'Order copied' : 'Could not copy'); };
   $('clear-cart').onclick = () => { cart = []; save(); renderCart(); };
 
-  $('open-cart').onclick = $('cartbar-btn').onclick = () => { loadSettings(); fillDays(); renderCart(); $('cart-dialog').showModal(); };
+  $('open-cart').onclick = $('cartbar-btn').onclick = () => { loadSettings(); fillDays(); resetCartView(); $('cart-dialog').showModal(); };
   $('cart-close').onclick = () => $('cart-dialog').close();
 
   $('share-site').onclick = async () => {

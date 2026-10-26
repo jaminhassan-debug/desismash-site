@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="styles.css?v=20261013e">
+<link rel="stylesheet" href="styles.css?v=20261025a">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FoodEstablishment","name":"DesiSmash by Chef Hass","servesCuisine":["Burgers","Indian fusion"],"areaServed":"Leicester","openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Friday","Saturday","Sunday"],"opens":"17:00","closes":"22:30"}]}
 </script>
@@ -307,12 +307,23 @@
         <p class="fine" id="send-note">You pay on collection or delivery. Your order is confirmed when Chef Hass replies on WhatsApp.</p>
       </form>
     </div>
+    <div id="confirm" hidden tabindex="-1">
+      <h4 id="cf-title">Thanks, we have your order</h4>
+      <p class="note-box" id="cf-status" role="status"></p>
+      <dl class="cf-details" id="cf-details"></dl>
+      <ul class="cf-lines" id="cf-lines"></ul>
+      <div class="totals"><div class="grand"><span id="cf-total-label">Total</span><b id="cf-total"></b></div></div>
+      <p class="fine" id="cf-pay"></p>
+      <a class="btn primary wide" id="cf-wa" target="_blank" rel="noopener">Open WhatsApp to send it</a>
+      <button class="btn wide" type="button" id="cf-copy">Copy order text</button>
+      <button class="link" type="button" id="cf-done">Done</button>
+    </div>
   </div>
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<script src="config.js?v=20261013e"></script>
-<script src="app.js?v=20261013e"></script>
+<script src="config.js?v=20261025a"></script>
+<script src="app.js?v=20261025a"></script>
 </body>
 </html>

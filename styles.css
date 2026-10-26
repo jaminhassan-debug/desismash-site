@@ -404,5 +404,14 @@ input[type=radio],input[type=checkbox]{width:22px;height:22px;flex:none;padding:
 .rm.all{grid-column:1/-1;border-style:dashed}
 .rm.all:has(input:checked){border-style:solid}
 
+#confirm{display:flex;flex-direction:column;gap:12px}
+#confirm[hidden]{display:none}
+#confirm h4{font-family:var(--display);font-size:1.6rem;text-transform:uppercase;line-height:1.05;margin:0}
+#confirm .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin:0}
+.cf-details{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0}
+.cf-details dt{color:var(--muted)}
+.cf-details dd{margin:0;font-weight:700;overflow-wrap:anywhere}
+.cf-lines{list-style:none;margin:0;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.cf-lines li{display:flex;justify-content:space-between;gap:12px}
 .note-box{background:var(--cream);border:2px solid var(--brand);border-radius:12px;padding:10px 14px;font-weight:600;margin:0}
 .del-off[hidden]{display:none!important}
