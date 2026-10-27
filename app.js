@@ -505,6 +505,7 @@
     }
     showConfirmation(snap, msg, waUrl, null);
     rememberOrder(snap, msg, waUrl, null);
+    sendReceivedEmail(snap);
     // The order is now on screen as received; the basket is cleared so it cannot be sent twice by accident.
     cart = []; save(); renderCart();
     $('order-form').reset();
@@ -512,6 +513,15 @@
     showConfirmation(snap, msg, waUrl, r);
     rememberOrder(snap, msg, waUrl, r);
   });
+
+  /* ---------- "order received" email, sent through the Worker in worker/ ---------- */
+  function sendReceivedEmail(s) {
+    if (!C.emailEndpoint || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s.email)) return;
+    fetch(C.emailEndpoint, {
+      method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: s.name, email: s.email, mode: s.mode, when: s.when, address: s.address, lines: s.lines, total: s.total })
+    }).catch(() => { /* the on-screen confirmation and WhatsApp still work */ });
+  }
 
   /* ---------- show the confirmation again when the customer comes back from WhatsApp ---------- */
   const LAST_KEY = 'desismash-last-order';
@@ -565,7 +575,7 @@
     $('cf-lines').innerHTML = s.lines.map((l) => '<li><span>' + esc(l.name) + '</span><span>' + money(l.price) + '</span></li>').join('') +
       (s.mode === 'Delivery' ? '<li><span>Delivery</span><span>' + (s.delivery ? money(s.delivery) : 'Free') + '</span></li>' : '');
     $('cf-total').textContent = money(s.total);
-    $('cf-pay').textContent = 'You pay on ' + (s.mode === 'Delivery' ? 'delivery' : 'collection') + '. Your order is only confirmed once Jay replies on WhatsApp.';
+    $('cf-pay').textContent = (C.emailEndpoint && s.email ? 'A confirmation email is on its way to ' + s.email + '. ' : '') + 'You pay on ' + (s.mode === 'Delivery' ? 'delivery' : 'collection') + '. Your order is only confirmed once Jay replies on WhatsApp.';
     const wa = $('cf-wa');
     if (waUrl) { wa.href = waUrl; wa.hidden = false; } else wa.hidden = true;
     $('cf-copy').onclick = async () => toast((await copyText(msg)) ? 'Order copied' : 'Could not copy');
