@@ -504,12 +504,34 @@
       await copyText(msg);
     }
     showConfirmation(snap, msg, waUrl, null);
-    // The order is now on screen as confirmed-received; the basket is cleared so it cannot be sent twice by accident.
+    rememberOrder(snap, msg, waUrl, null);
+    // The order is now on screen as received; the basket is cleared so it cannot be sent twice by accident.
     cart = []; save(); renderCart();
     $('order-form').reset();
     const r = await saving;
     showConfirmation(snap, msg, waUrl, r);
+    rememberOrder(snap, msg, waUrl, r);
   });
+
+  /* ---------- show the confirmation again when the customer comes back from WhatsApp ---------- */
+  const LAST_KEY = 'desismash-last-order';
+  function rememberOrder(snap, msg, waUrl, r) {
+    try { localStorage.setItem(LAST_KEY, JSON.stringify({ snap, msg, waUrl, r: r ? { ok: !!r.ok, skipped: !!r.skipped, number: r.number } : null, at: Date.now() })); } catch (e) { /* storage unavailable */ }
+  }
+  function forgetOrder() { try { localStorage.removeItem(LAST_KEY); } catch (e) { /* storage unavailable */ } }
+  function showLastOrder() {
+    let o = null;
+    try { o = JSON.parse(localStorage.getItem(LAST_KEY) || 'null'); } catch (e) { o = null; }
+    if (!o || !o.snap || Date.now() - o.at > 6 * 3600 * 1000) { if (o) forgetOrder(); return; }
+    const dlg = $('cart-dialog');
+    if (dlg.open) return;
+    showConfirmation(o.snap, o.msg, o.waUrl, o.r);
+    dlg.showModal();
+  }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') showLastOrder(); });
+  window.addEventListener('pageshow', showLastOrder);
+  $('cart-dialog').addEventListener('close', () => { if (!$('confirm').hidden) forgetOrder(); });
+  showLastOrder();
 
   /* ---------- on-screen order confirmation ---------- */
   function orderSnapshot() {
@@ -527,14 +549,14 @@
   function showConfirmation(s, msg, waUrl, r) {
     const saved = r && r.ok;
     const failed = r && !r.ok && !r.skipped;
-    $('cart-title').textContent = 'Order sent';
+    $('cart-title').textContent = 'Order received';
     $('cart-empty').hidden = true; $('checkout').hidden = true; $('cart-lines').hidden = true;
     $('cf-title').textContent = 'Thanks ' + s.name.split(' ')[0] + ', we have your order';
     const st = $('cf-status');
     if (!waUrl) st.textContent = 'Your order text is copied. Paste it to Chef Hass on WhatsApp to finish.';
-    else if (saved) st.textContent = 'Order #' + r.number + ' received. Press send in WhatsApp so Chef Hass can confirm it. We will reply to confirm.';
+    else if (saved) st.textContent = 'Order #' + r.number + ' received. Waiting on Jay to confirm it. If you have not pressed send in WhatsApp yet, do that now so he sees it.';
     else if (failed) st.textContent = 'We could not save your order online. Please make sure the WhatsApp message is sent, otherwise we will not see it.';
-    else st.textContent = 'Saving your order… Press send in WhatsApp so Chef Hass can confirm it. We will reply to confirm.';
+    else st.textContent = 'Order received. Waiting on Jay to confirm it. If you have not pressed send in WhatsApp yet, do that now so he sees it.';
     const rows = [['Name', s.name], ['Mobile', s.phone]];
     if (s.email) rows.push(['Email', s.email]);
     rows.push([s.mode, s.when]);
@@ -543,7 +565,7 @@
     $('cf-lines').innerHTML = s.lines.map((l) => '<li><span>' + esc(l.name) + '</span><span>' + money(l.price) + '</span></li>').join('') +
       (s.mode === 'Delivery' ? '<li><span>Delivery</span><span>' + (s.delivery ? money(s.delivery) : 'Free') + '</span></li>' : '');
     $('cf-total').textContent = money(s.total);
-    $('cf-pay').textContent = 'You pay on ' + (s.mode === 'Delivery' ? 'delivery' : 'collection') + '. Your order is only confirmed once Chef Hass replies on WhatsApp.';
+    $('cf-pay').textContent = 'You pay on ' + (s.mode === 'Delivery' ? 'delivery' : 'collection') + '. Your order is only confirmed once Jay replies on WhatsApp.';
     const wa = $('cf-wa');
     if (waUrl) { wa.href = waUrl; wa.hidden = false; } else wa.hidden = true;
     $('cf-copy').onclick = async () => toast((await copyText(msg)) ? 'Order copied' : 'Could not copy');
