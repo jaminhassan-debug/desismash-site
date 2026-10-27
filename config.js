@@ -114,6 +114,9 @@ window.DESI = {
     key: "sb_publishable_GQDorFgoz6UzOBPsd7UQUw_9eZusbCo"
   },
 
+  // Order-received email. Paste the Cloudflare Worker URL (see worker/README.md). Empty means no email is sent.
+  emailEndpoint: "",
+
   // Email capture. Paste a form endpoint (Formspree, Web3Forms, or a Google Apps Script URL) so sign-ups reach you.
   // See README, "Collecting emails". Leave empty and the recipe still downloads, but no emails are saved.
   leads: {
