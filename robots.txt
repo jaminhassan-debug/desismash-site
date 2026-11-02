@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /kitchen/
-Disallow: /post-kit.html
 
 Sitemap: https://www.desismash.co.uk/sitemap.xml
