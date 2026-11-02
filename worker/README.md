@@ -9,7 +9,7 @@ Needs a free Brevo account and a free Cloudflare account. No secrets are stored 
    - `BREVO_API_KEY` (type Secret): the Brevo key
    - `SENDER_EMAIL`: the sender address you verified in Brevo
    - `SENDER_NAME`: `DesiSmash`
-   - `ALLOWED_ORIGIN`: `https://jaminhassan-debug.github.io`
+   - `ALLOWED_ORIGIN`: `https://www.desismash.co.uk,https://desismash.co.uk`
 4. Copy the Worker URL into `emailEndpoint` in `config.js` and commit. Leave it empty to turn emails off.
 
 Only customers who typed an email address get one. The email is a fixed template, so the endpoint cannot be used to send arbitrary text.

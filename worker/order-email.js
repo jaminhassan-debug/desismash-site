@@ -1,20 +1,23 @@
 // Cloudflare Worker: sends the "order received, waiting on Jay to confirm" email.
 // Secrets and settings live in Cloudflare, never in this repo:
-//   BREVO_API_KEY (secret), SENDER_EMAIL, SENDER_NAME, ALLOWED_ORIGIN (e.g. https://jaminhassan-debug.github.io)
+//   BREVO_API_KEY (secret), SENDER_EMAIL, SENDER_NAME, ALLOWED_ORIGIN (comma separated, e.g. https://www.desismash.co.uk,https://desismash.co.uk)
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const clip = (s, n) => String(s == null ? '' : s).slice(0, n);
 const money = (n) => '£' + (Number(n) || 0).toFixed(2);
 
-function cors(env) {
-  return { 'Access-Control-Allow-Origin': env.ALLOWED_ORIGIN || '', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type', 'Vary': 'Origin' };
+const allowed = (env) => String(env.ALLOWED_ORIGIN || '').split(',').map((x) => x.trim()).filter(Boolean);
+
+function cors(env, origin) {
+  return { 'Access-Control-Allow-Origin': allowed(env).includes(origin) ? origin : '', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type', 'Vary': 'Origin' };
 }
 
 export default {
   async fetch(req, env) {
-    const h = cors(env);
+    const origin = req.headers.get('Origin');
+    const h = cors(env, origin);
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: h });
     if (req.method !== 'POST') return new Response('Method not allowed', { status: 405, headers: h });
-    if (req.headers.get('Origin') !== env.ALLOWED_ORIGIN) return new Response('Forbidden', { status: 403, headers: h });
+    if (!allowed(env).includes(origin)) return new Response('Forbidden', { status: 403, headers: h });
 
     let o;
     try { o = await req.json(); } catch (e) { return new Response('Bad request', { status: 400, headers: h }); }
