@@ -31,7 +31,7 @@ This has no card payments, so it needs no payment account and costs nothing. If 
 
 This repository is the website. GitHub Pages publishes it, and every commit to `main` goes live in about a minute.
 
-- **Live site:** https://jaminhassan-debug.github.io/desismash-site/
+- **Live site:** https://www.desismash.co.uk/ (domain bought on Cloudflare; `CNAME` file tells GitHub Pages to serve it). The old address https://jaminhassan-debug.github.io/desismash-site/ redirects to it.
 - **Edit a file:** open it on GitHub, press the pencil icon, change it, press Commit changes.
 - **Weekly changes:** edit `config.js` (special, sold-out list, announcement) and commit.
 - **Closing for a weekend:** in `config.js` set `closed: { on: true, ... }`. The site then shows your message, and every Add button says Closed. Set it back to `false` to reopen.
