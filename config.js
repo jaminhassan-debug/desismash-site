@@ -28,8 +28,8 @@ window.DESI = {
   minLeadMinutes: 45,       // earliest slot today = now + this
 
   // Delivery is priced by distance from your kitchen. Collection is always free.
-  // Put your exact kitchen postcode here (customers never see it). Until then the LE3 area centre is used.
-  kitchenPostcode: "LE3 8RH",   // a nearby postcode, so your home address is not published
+  // This file is PUBLIC: anyone can read it. Use a postcode near the kitchen (for example a neighbouring street), never your exact address.
+  kitchenPostcode: "LE3 8RH",
   kitchenOutcode: "LE3",
   // Distance is a straight line from your postcode to theirs, multiplied by roadFactor to approximate
   // the drive. Use 1.2 for typical Leicester streets, or 1 for pure straight-line miles.
@@ -65,7 +65,7 @@ window.DESI = {
     { id: "bbq",      icon: "burger" }
   ],
 
-  // Prices in pounds, from the blueprint.
+  // Prices in pounds.
   tiers: {
     1: { name: "Classics",     burger: 4.99, meal: 6.99 },
     2: { name: "Gourmet",      burger: 5.99, meal: 7.99 },
