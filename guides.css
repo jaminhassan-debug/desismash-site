@@ -1,0 +1,51 @@
+/* Guide pages. Extends styles.css (same colours, fonts and buttons). */
+body{padding-bottom:0}
+.gtop{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:10px 20px;background:#fff;border-bottom:3px solid var(--brand)}
+.gtop nav{display:flex;align-items:center;gap:18px;margin-left:auto}
+.gtop nav a:not(.pill){text-decoration:none;font-weight:600;font-size:.95rem;text-transform:uppercase;letter-spacing:.06em}
+.gtop nav a:not(.pill):hover{color:var(--brand)}
+@media(max-width:480px){.gtop nav a.hide-sm{display:none}}
+.crumbs{font-size:.85rem;color:var(--muted);padding-top:18px}
+.crumbs a{color:var(--muted)}
+.gdoc{max-width:760px;margin:0 auto;padding:12px 20px 56px;display:flex;flex-direction:column;gap:16px}
+.gdoc h1{font-size:clamp(2.2rem,6vw,3.4rem);margin-top:6px}
+.gdoc h2{font-size:clamp(1.6rem,4vw,2.1rem);color:var(--brand);margin-top:18px}
+.gdoc h3{font-size:1.2rem;margin-top:6px}
+.gdoc p,.gdoc li{font-size:1.06rem;line-height:1.65}
+.gdoc ul,.gdoc ol{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:8px}
+.gdoc a{color:var(--brand-dark)}
+.gdoc .meta{font-size:.88rem;color:var(--muted)}
+.gdoc .hero-img{border-radius:14px;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover}
+.gdoc .answer{background:var(--cream);border-left:6px solid var(--brand);border-radius:0 12px 12px 0;padding:14px 16px;font-weight:500}
+.gcta{background:var(--cream);border:2px solid var(--brand);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px;margin-block:10px}
+.gcta h3{margin:0;font-size:1.5rem}
+.gcta p{font-size:1rem}
+.gcta .row{display:flex;flex-wrap:wrap;gap:10px}
+.gdoc .gcta a.pill.solid{color:#fff}
+.gdoc .gcta a.pill.ghost{color:var(--ink);border-color:var(--ink)}
+.pill.ghost{background:#fff}
+.related{display:grid;gap:12px;grid-template-columns:1fr}
+@media(min-width:720px){.related{grid-template-columns:repeat(3,1fr)}}
+.related a{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff;height:100%}
+.related a:hover{border-color:var(--brand)}
+.related b{font-family:var(--display);text-transform:uppercase;line-height:1.1;font-size:1.1rem}
+.related span{font-size:.9rem;color:var(--muted)}
+.gindex{max-width:var(--maxw);margin:0 auto;padding:12px 20px 56px}
+.gindex h1{font-size:clamp(2.4rem,6vw,4rem);margin:8px 0 10px}
+.gindex>p{max-width:62ch;color:var(--muted);font-size:1.08rem}
+.gcards{display:grid;gap:18px;grid-template-columns:1fr;margin-top:24px}
+@media(min-width:640px){.gcards{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:980px){.gcards{grid-template-columns:repeat(3,1fr)}}
+.gcard{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+.gcard:hover{border-color:var(--brand)}
+.gcard img{width:100%;aspect-ratio:3/2;object-fit:cover}
+.gcard div{padding:14px 16px 18px;display:flex;flex-direction:column;gap:8px}
+.gcard b{font-family:var(--display);text-transform:uppercase;font-size:1.25rem;line-height:1.1}
+.gcard span{font-size:.95rem;color:var(--muted)}
+.gfoot{background:#111;color:#e8e3dc;padding:32px 20px 28px;text-align:center}
+.gfoot nav{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;margin-bottom:12px}
+.gfoot a{color:#cfc8bf;text-decoration:none;padding:10px 4px;min-height:44px;display:inline-flex;align-items:center}
+.gfoot a:hover{color:#fff;text-decoration:underline}
+.gfoot p{font-size:.85rem;color:#a69b8d}
+/* styles.css hides .pill.order below 420px for the main header; guide pages keep the Order button visible. */
+.gtop .pill.order{display:inline-flex;min-height:42px;padding:8px 14px;font-size:.85rem;white-space:nowrap}
