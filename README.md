@@ -22,7 +22,7 @@ This has no card payments, so it needs no payment account and costs nothing. If 
 
 1. Open `config.js`. Put your WhatsApp Business number in `whatsapp` (country code first, digits only, e.g. `447123456789`).
 2. Add your Instagram, TikTok and Facebook links under `social`.
-3. Set `kitchenPostcode` (your exact postcode, never shown to customers). The mileage bands and `roadFactor` are in the same file.
+3. Set `kitchenPostcode` to a postcode **near** your kitchen, never your exact address. `config.js` is public, so anyone can read this value. The mileage bands and `roadFactor` are in the same file.
 4. Check `allergenNote` against your real recipes. It is a starting point, not a legal allergen matrix.
 5. Each weekend: change `special`, and add sold-out item ids to `soldOut`.
 6. Publish (below), then open `post-kit.html` to write your posts.
@@ -35,7 +35,7 @@ This repository is the website. GitHub Pages publishes it, and every commit to `
 - **Edit a file:** open it on GitHub, press the pencil icon, change it, press Commit changes.
 - **Weekly changes:** edit `config.js` (special, sold-out list, announcement) and commit.
 - **Closing for a weekend:** in `config.js` set `closed: { on: true, ... }`. The site then shows your message, and every Add button says Closed. Set it back to `false` to reopen.
-- **Source of truth:** this repo only holds public files. The paid recipe book, its source and the business blueprint live in the separate private repo `desismash-private`. Never add them here.
+- **Source of truth:** this repo only holds public files. The paid recipe book, its source, costings, margins, supplier details and business plans live in the separate private repo `desismash-private`. Never add them here: everything in this repo is public and stays in its history.
 
 Pages setup (already done): Settings, Pages, Deploy from a branch, `main`, `/ (root)`.
 
@@ -49,7 +49,7 @@ There is no free way to connect a home-built site to these three. Each runs its 
 To list on the apps:
 
 1. Apply as a merchant on each app's restaurant sign-up page. Expect to give your food business registration, hygiene rating, bank details and photos. The approval can take a few weeks and your EHO registration must be in place first.
-2. Upload the menu. Price app items about 30% higher than the site to cover commission (blueprint: £9.99 / £10.99 / £11.99 meal deals).
+2. Upload the menu and set app prices to suit the commission each app charges.
 3. Test whether a single smash line can handle app orders and direct orders on the same night before you switch both on.
 
 ## Collecting emails and selling the recipe book
@@ -104,3 +104,10 @@ Every order is saved to a private database (Supabase, London) as well as going t
 - **Adding staff:** add the email to the `staff` table in Supabase (Table Editor), then that person signs in on `/kitchen/` (use Create account once). Nobody else can see any data.
 - **Marketing:** the Customers tab shows who opted in. Only email people marked "Opted in".
 - **Keys:** the key in `config.js` can only place orders. It cannot read anything.
+
+## Security notes
+
+- Everything in this repo is public, including `config.js`. Never put passwords, secret keys, costs, margins or your home address in it. The Supabase key in `config.js` is the public "publishable" key and can only place orders.
+- The kitchen screen (`/kitchen/`) runs under a strict Content Security Policy and escapes all customer text. Keep its script in `kitchen/kitchen.js` (no inline scripts) or the policy will block it.
+- Staff access is decided by the `staff` table, matched on exact email. In Supabase (Authentication, Providers, Email) turn **off** "Allow new users to sign up" once your staff have accounts, and keep row level security on for every table.
+- Email Worker: add a Cloudflare rate limiting rule for it (see `worker/README.md`).

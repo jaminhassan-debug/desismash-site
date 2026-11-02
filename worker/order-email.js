@@ -21,9 +21,13 @@ export default {
 
     let o;
     try { o = await req.json(); } catch (e) { return new Response('Bad request', { status: 400, headers: h }); }
+    // Refuse anything that looks like a link or address: this stops the endpoint being used to send spam or phishing text.
+    const LINKISH = /https?:|www\.|\w\.(com|co|uk|net|org|io|ly|xyz|me|info|biz)\b|[@<>]/i;
+    const fields = [o.name, o.when, o.address].concat((Array.isArray(o.lines) ? o.lines : []).map((l) => l && l.name));
+    if (fields.some((f) => LINKISH.test(String(f == null ? '' : f)))) return new Response('Bad request', { status: 400, headers: h });
     const email = clip(o.email, 120).trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return new Response('Bad email', { status: 400, headers: h });
-    const lines = Array.isArray(o.lines) ? o.lines.slice(0, 30) : [];
+    const lines = Array.isArray(o.lines) ? o.lines.slice(0, 20) : [];
     const first = esc(clip(o.name, 60).split(' ')[0] || 'there');
     const rows = lines.map((l) => '<tr><td style="padding:4px 0">' + esc(clip(l.name, 120)) + '</td><td style="padding:4px 0;text-align:right">' + money(l.price) + '</td></tr>').join('');
     const mode = o.mode === 'Delivery' ? 'Delivery' : 'Collection';

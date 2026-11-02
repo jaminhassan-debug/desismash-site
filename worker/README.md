@@ -13,3 +13,7 @@ Needs a free Brevo account and a free Cloudflare account. No secrets are stored 
 4. Copy the Worker URL into `emailEndpoint` in `config.js` and commit. Leave it empty to turn emails off.
 
 Only customers who typed an email address get one. The email is a fixed template, so the endpoint cannot be used to send arbitrary text.
+
+## Stop it being abused (do this)
+
+The endpoint can be called by anyone who knows its address, and the Origin check only stops other websites, not scripts. In Cloudflare, go to Security, WAF, Rate limiting rules and add a rule for the Worker's hostname: more than 5 requests per 10 minutes from one IP, action Block. The Worker also rejects names, items and addresses that contain links or email addresses.
