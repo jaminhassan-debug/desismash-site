@@ -446,7 +446,7 @@ body.is-prelaunch .cartbar,body.is-prelaunch #open-cart{display:none!important}
 body.is-prelaunch .card .btn.primary:disabled{opacity:1}
 body.is-prelaunch .hero .status{display:none}
 
-@media(max-width:480px){.wordmark small{display:none}.wordmark b{font-size:1.15rem}.brand{gap:8px}}
+@media(max-width:480px){.wordmark b{font-size:1.15rem}.wordmark small{font-size:.5rem;letter-spacing:.14em;margin-top:2px}.brand{gap:8px}}
 @media(max-width:420px){.top{padding-inline:12px;gap:8px}.logo{width:46px;height:46px}}
 
 /* sticky offsets follow the header height (logo + padding + border) */
@@ -464,6 +464,7 @@ body.is-prelaunch .hero .status{display:none}
   .cart-btn span{margin-left:0}
   .brand{gap:6px}
   .wordmark b{font-size:1.05rem}
+  .wordmark small{font-size:.48rem;letter-spacing:.12em}
 }
-@media(max-width:340px){.wordmark b{font-size:.95rem}.logo{width:40px;height:40px}}
+@media(max-width:340px){.wordmark b{font-size:.95rem}.wordmark small{font-size:.44rem}.logo{width:40px;height:40px}}
 @media(max-width:340px){.cart-btn{padding:6px 8px;gap:4px;min-height:40px}.cart-btn span{padding:1px 6px}}
