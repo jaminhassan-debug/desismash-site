@@ -47,6 +47,15 @@ window.DESI = {
   // Closed weekend switch. Set on: true to stop orders and show the message everywhere. Change back to false to reopen.
   closed: { on: false, message: "We are closed this weekend. Back next Friday at 5 pm." },
 
+  // Coming-soon mode. While `on` is true and the date has not passed, ordering is switched off everywhere,
+  // the home page shows a countdown, and the menu is for browsing only. It opens by itself at `at`.
+  // `at` is UK time (GMT in winter, e.g. +00:00; BST in summer is +01:00). Set `on: false` to open straight away.
+  launch: {
+    on: true,
+    at: "2026-12-04T17:00:00+00:00",
+    label: "Friday 4 December at 5 pm"
+  },
+
   // Banner above the header. Empty string hides it.
   announcement: "Launch weekend: first 50 orders get a free dip pot",
 

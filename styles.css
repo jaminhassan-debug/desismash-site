@@ -422,3 +422,16 @@ input[type=radio],input[type=checkbox]{width:22px;height:22px;flex:none;padding:
 @media(min-width:760px){.guide-links{grid-template-columns:1fr 1fr}}
 .guide-links a{display:block;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;text-decoration:none;font-weight:600}
 .guide-links a:hover{border-color:var(--brand);color:var(--brand-dark)}
+
+/* Coming-soon mode (see launch in config.js) */
+.launch{display:flex;flex-direction:column;gap:10px;margin:2px 0 6px}
+.launch-kicker{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:.9rem;opacity:.95}
+.launch-date{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(1.3rem,4vw,1.9rem);line-height:1.05}
+.cd{display:grid;grid-template-columns:repeat(4,minmax(0,76px));gap:10px;margin-block:4px}
+.cd div{background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.35);border-radius:14px;padding:10px 4px 8px;text-align:center;backdrop-filter:blur(2px)}
+.cd b{display:block;font-family:var(--display);font-size:clamp(1.7rem,6.5vw,2.5rem);line-height:1;font-variant-numeric:tabular-nums}
+.cd span{display:block;margin-top:4px;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;opacity:.9}
+.launch-note{font-size:.95rem;opacity:.95}
+body.is-prelaunch .cartbar,body.is-prelaunch #open-cart{display:none!important}
+body.is-prelaunch .card .btn.primary:disabled{opacity:1}
+body.is-prelaunch .hero .status{display:none}

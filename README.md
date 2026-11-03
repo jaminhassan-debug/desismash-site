@@ -111,3 +111,13 @@ Every order is saved to a private database (Supabase, London) as well as going t
 - The kitchen screen (`/kitchen/`) runs under a strict Content Security Policy and escapes all customer text. Keep its script in `kitchen/kitchen.js` (no inline scripts) or the policy will block it.
 - Staff access is decided by the `staff` table, matched on exact email. In Supabase (Authentication, Providers, Email) turn **off** "Allow new users to sign up" once your staff have accounts, and keep row level security on for every table.
 - Email Worker: add a Cloudflare rate limiting rule for it (see `worker/README.md`).
+
+## Coming-soon mode and countdown
+
+`launch` in `config.js` turns the site into a "coming soon" page: the home page shows a countdown, the menu can be browsed but nothing can be added, the order form is blocked, and the guides show a notice.
+
+- **Change the date:** edit `at` (UK time, for example `2026-12-04T17:00:00+00:00`) and `label` (the words shown, for example `Friday 4 December at 5 pm`). GMT is `+00:00` in winter, BST is `+01:00` in summer.
+- **It opens by itself** when the countdown reaches zero. Nothing needs changing on the day.
+- **Open early:** set `on: false`.
+- **After launch:** the page and search results still say "coming soon" in the page description (`index.html`, the `description`, `og:description` and `twitter:description` lines). Update them to "Pre-order Fri to Sun for collection or delivery".
+- This only switches ordering off in the website. It is not a lock on the order database, which anyone with the public key could still call directly.

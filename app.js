@@ -8,8 +8,11 @@
   const DOWFULL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  const isClosed = () => !!(C.closed && C.closed.on);
-  const closedMsg = () => (C.closed && C.closed.message) || 'We are closed right now.';
+  const launchAt = () => (C.launch && C.launch.on && C.launch.at ? Date.parse(C.launch.at) || 0 : 0);
+  const prelaunch = () => launchAt() > Date.now();
+  const launchMsg = () => 'Coming soon. Ordering opens ' + ((C.launch && C.launch.label) || 'soon') + '.';
+  const isClosed = () => prelaunch() || !!(C.closed && C.closed.on);
+  const closedMsg = () => (prelaunch() ? launchMsg() : (C.closed && C.closed.message) || 'We are closed right now.');
 
   /* ---------- UK time ---------- */
   function londonNow() {
@@ -48,6 +51,7 @@
 
   function renderStatus() {
     const el = $('status');
+    if (prelaunch()) { el.className = 'status closed'; el.textContent = 'Coming soon'; return; }
     if (isClosed()) { el.className = 'status closed'; el.textContent = closedMsg(); return; }
     const now = londonNow();
     const dow = new Date(Date.UTC(now.y, now.m - 1, now.d)).getUTCDay();
@@ -298,7 +302,7 @@
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
         '<div class="foot"><span class="price">' + money(t.burger) + '<small>meal ' + money(t.meal) + '</small></span>' +
-        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : isClosed() ? 'Closed' : 'Add') + '</button></div></article>';
+        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : prelaunch() ? 'Coming soon' : isClosed() ? 'Closed' : 'Add') + '</button></div></article>';
     }).join('');
   }
   function renderSides() {
@@ -321,7 +325,7 @@
     if (!b || C.soldOut.includes(b.id)) return;
     const el = $('special');
     el.hidden = false;
-    el.innerHTML = '<div class="inner"><div><span class="eyebrow">This week\'s special</span><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p></div><button class="btn primary" data-burger="' + b.id + '">Order it</button></div>';
+    el.innerHTML = '<div class="inner"><div><span class="eyebrow">This week\'s special</span><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p></div><button class="btn primary" data-burger="' + b.id + '">' + (prelaunch() ? 'Coming soon' : 'Order it') + '</button></div>';
   }
 
   function linkRow(el, items) {
@@ -490,6 +494,7 @@
 
   $('order-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (isClosed()) { toast(closedMsg()); return; }
     if (!validate()) return;
     const msg = buildMessage();
     const snap = orderSnapshot();
@@ -589,7 +594,7 @@
     renderCart();
   }
   $('cf-done').onclick = () => { $('cart-dialog').close(); };
-  $('copy-order').onclick = async () => { if (validate()) toast((await copyText(buildMessage())) ? 'Order copied' : 'Could not copy'); };
+  $('copy-order').onclick = async () => { if (isClosed()) { toast(closedMsg()); return; } if (validate()) toast((await copyText(buildMessage())) ? 'Order copied' : 'Could not copy'); };
   $('clear-cart').onclick = () => { cart = []; save(); renderCart(); };
 
   $('open-cart').onclick = $('cartbar-btn').onclick = () => { loadSettings(); fillDays(); resetCartView(); $('cart-dialog').showModal(); };
@@ -723,12 +728,41 @@
     } catch (e) { /* keep the last known state */ }
   }
 
+  /* ---------- coming-soon countdown ---------- */
+  function startLaunch() {
+    const box = $('launch');
+    if (!box) return;
+    box.hidden = false;
+    const label = (C.launch && C.launch.label) || '';
+    $('launch-date').textContent = label;
+    $('launch-time').textContent = label;
+    $('launch-time').setAttribute('datetime', C.launch.at);
+    document.querySelectorAll('a.nav-order, .top-actions a.pill.order').forEach((a) => { a.textContent = 'See menu'; });
+    const first = $('hero-order');
+    if (first) {
+      first.textContent = 'Join the drop list';
+      if (C.whatsapp) { first.href = 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi Chef Hass, add me to the DesiSmash drop list'); first.target = '_blank'; first.rel = 'noopener'; }
+    }
+    const pad = (n) => String(n).padStart(2, '0');
+    function tick() {
+      const ms = launchAt() - Date.now();
+      if (ms <= 0) { location.reload(); return; }
+      const s = Math.floor(ms / 1000);
+      $('cd-d').textContent = Math.floor(s / 86400);
+      $('cd-h').textContent = pad(Math.floor((s % 86400) / 3600));
+      $('cd-m').textContent = pad(Math.floor((s % 3600) / 60));
+      $('cd-s').textContent = pad(s % 60);
+    }
+    tick(); setInterval(tick, 1000);
+  }
+
   /* ---------- boot ---------- */
   $('allergen').textContent = C.allergenNote;
   $('faq-all').textContent = C.allergenNote;
   $('faq-del').textContent = C.deliveryArea;
   $('area').textContent = 'Delivery: ' + C.deliveryArea;
-  if (isClosed()) { $('announce').textContent = closedMsg(); $('announce').hidden = false; document.body.classList.add('is-closed'); }
+  if (prelaunch()) { $('announce').textContent = launchMsg() + (C.announcement ? ' ' + C.announcement : ''); $('announce').hidden = false; document.body.classList.add('is-closed', 'is-prelaunch'); startLaunch(); }
+  else if (isClosed()) { $('announce').textContent = closedMsg(); $('announce').hidden = false; document.body.classList.add('is-closed'); }
   else if (C.announcement) { $('announce').textContent = C.announcement; $('announce').hidden = false; }
   $('join').href = C.whatsapp ? 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi Chef Hass, add me to the DesiSmash drop list') : '#';
   if (!C.whatsapp) $('join').setAttribute('aria-disabled', 'true');
