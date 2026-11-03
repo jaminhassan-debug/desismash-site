@@ -56,6 +56,9 @@ window.DESI = {
     label: "Friday 4 December at 5 pm"
   },
 
+  // Bump this number whenever you replace a photo in images/ with a new one of the same name, so visitors' browsers fetch the new picture.
+  imageVersion: "20261103",
+
   // Banner above the header. Empty string hides it.
   announcement: "Launch weekend: first 50 orders get a free dip pot",
 
