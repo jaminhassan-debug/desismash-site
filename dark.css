@@ -10,6 +10,7 @@
 body{background:var(--paper);color:var(--ink)}
 .logo-light{display:none}
 .logo-dark{display:block}
+.wordmark b span{color:var(--brand-light)}
 
 /* header */
 .top,.gtop,.top nav,.menu-btn{background:#14110f}
