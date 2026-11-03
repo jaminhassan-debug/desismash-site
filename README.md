@@ -128,3 +128,7 @@ Every order is saved to a private database (Supabase, London) as well as going t
 - `logos/logo-colour.png` is the three-colour logo. The browser tab icon (`favicon.ico`, `logos/favicon-32.png`), the iPhone icon (`logos/apple-touch-icon.png`) and the structured-data logo (`logos/logo-192.png`) are all made from it, as a round white badge so it reads on light and dark browser tabs.
 - **Dark mode** follows the visitor's browser or phone setting. It lives in `dark.css` and switches the logo as well, so the logo and the page can never disagree. To turn dark mode off, delete the `<link ... dark.css ...>` line in `index.html`, `privacy.html`, `terms.html` and the guide template.
 - The original logo pictures are kept in the private repo, in `assets/logos/`.
+
+## Replacing a photo
+
+If you replace a photo in `images/` with a new one of the same name, visitors' browsers may keep showing the old one for a while. Change `imageVersion` in `config.js` (any new number, for example today's date) and every visitor fetches the new picture.

@@ -1,6 +1,7 @@
 (function () {
   const C = window.DESI;
   const TZ = 'Europe/London';
+  const IV = C.imageVersion ? '?v=' + C.imageVersion : '';
   const $ = (id) => document.getElementById(id);
   const money = (n) => '£' + n.toFixed(2);
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -104,8 +105,8 @@
   };
   function lineThumb(l) {
     const k = String(l.key || '').split('|');
-    if (k[0] === 'b' && k[1]) return { src: 'images/' + k[1] + '.jpg' };
-    if (k[0] === 's' && k[1]) return { src: 'images/side-' + k[1] + '.jpg' };
+    if (k[0] === 'b' && k[1]) return { src: 'images/' + k[1] + '.jpg' + IV };
+    if (k[0] === 's' && k[1]) return { src: 'images/side-' + k[1] + '.jpg' + IV };
     let kind = 'bag';
     if (k[0] === 's') kind = k[1] === 'can' ? 'can' : k[1] === 'dip' ? 'dip' : 'fries';
     if (k[0] === 'p') kind = k[1] === 'spice' ? 'jar' : 'bag';
@@ -193,7 +194,7 @@
     const t = C.tiers[b.tier];
     $('item-title').textContent = b.name;
     $('item-desc').textContent = b.desc;
-    setItemImg('images/' + b.id + '.jpg', b.name);
+    setItemImg('images/' + b.id + '.jpg' + IV, b.name);
     let html = '';
     if (!b.veg) html += '<fieldset class="opt"><legend>Patty</legend>' + radios('patty', C.patties.map((p) => ({ label: p.label, note: p.note })), 1) + '</fieldset>';
     html += '<fieldset class="opt"><legend>Make it a meal?</legend>' + radios('meal', [
@@ -253,7 +254,7 @@
     cur = { type: 'side', s }; qty = 1;
     $('item-title').textContent = s.name;
     $('item-desc').textContent = s.desc;
-    setItemImg('images/side-' + s.id + '.jpg', s.name);
+    setItemImg('images/side-' + s.id + '.jpg' + IV, s.name);
     $('item-options').innerHTML = s.choose ? selectHtml('o-choice', s.choose === 'fries' ? 'Seasoning' : s.choose === 'sauces' ? 'Sauce' : 'Drink', C[s.choose]) : '';
     $('item-options').onchange = null;
     refreshPrice();
@@ -297,7 +298,7 @@
     $('burger-grid').innerHTML = list.map((b) => {
       const t = C.tiers[b.tier], sold = C.soldOut.includes(b.id);
       return '<article class="card' + (sold ? ' sold' : '') + '">' +
-        '<div class="shot"><img src="images/' + b.id + '.jpg" alt="' + esc(b.name) + '" width="560" height="420" loading="lazy" decoding="async"></div>' +
+        '<div class="shot"><img src="images/' + b.id + '.jpg' + IV + '" alt="' + esc(b.name) + '" width="560" height="420" loading="lazy" decoding="async"></div>' +
         '<h3>' + esc(b.name) + '</h3>' +
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
@@ -309,7 +310,7 @@
     $('side-grid').innerHTML = C.sides.map((s) => {
       const sold = C.soldOut.includes(s.id);
       return '<article class="card' + (sold ? ' sold' : '') + '">' +
-        '<div class="shot"><img src="images/side-' + esc(s.id) + '.jpg" alt="' + esc(s.name) + '" width="560" height="373" loading="lazy" decoding="async"></div>' +
+        '<div class="shot"><img src="images/side-' + esc(s.id) + '.jpg' + IV + '" alt="' + esc(s.name) + '" width="560" height="373" loading="lazy" decoding="async"></div>' +
         '<h3>' + esc(s.name) + '</h3><p>' + esc(s.desc) + '</p>' +
         '<div class="foot"><span class="price">' + money(s.price) + '</span><button class="btn" data-side="' + s.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : 'Add') + '</button></div></article>';
     }).join('');
@@ -687,7 +688,7 @@
   function renderHeroImg() {
     const b = C.burgers.find((x) => x.id === C.special);
     const im = $('hero-img');
-    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg'; im.alt = b.name + ' smash burger, ' + b.desc.replace(/\.$/, '').toLowerCase(); }
+    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg' + IV; im.alt = b.name + ' smash burger, ' + b.desc.replace(/\.$/, '').toLowerCase(); }
   }
 
   /* ---------- delivery on/off (set from the kitchen screen) ---------- */
