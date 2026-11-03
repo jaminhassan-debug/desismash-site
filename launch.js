@@ -15,6 +15,6 @@
   }
   document.body.insertBefore(bar, document.body.firstChild);
   document.querySelectorAll('a.pill.order, .gcta a.pill.solid').forEach(function (el) {
-    if (/^order now$/i.test(el.textContent.trim())) el.textContent = 'See the menu';
+    if (/^order now$/i.test(el.textContent.trim())) el.textContent = el.classList.contains('order') ? 'See menu' : 'See the menu';
   });
 })();

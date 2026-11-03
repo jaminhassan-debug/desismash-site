@@ -1,0 +1,50 @@
+/* Dark mode. Loaded only when the visitor's browser or device is set to dark
+   (the <link> uses media="(prefers-color-scheme: dark)"). Delete that <link> to switch dark mode off.
+   It also swaps the logo: dark logo in dark mode, light logo in light mode. */
+:root{
+  color-scheme:dark;
+  --paper:#14110f; --bg:#14110f; --ink:#f3ece4; --fg:#f3ece4; --muted:#b9aea2;
+  --grey:#1b1714; --bg2:#1b1714; --cream:#2a1f17; --tint:#2a1f17; --line:#3a312a;
+  --card:#1f1a17; --surface:#1f1a17; --red:#ff6b61; --green:#59d67a; --link:#ff9a52;
+}
+body{background:var(--paper);color:var(--ink)}
+.logo-light{display:none}
+.logo-dark{display:block}
+
+/* header */
+.top,.gtop,.top nav,.menu-btn{background:#14110f}
+.top nav a:hover,.gtop nav a:not(.pill):hover{color:var(--link)}
+.cart-btn{background:var(--surface)}
+.cart-btn span{background:var(--ink);color:var(--paper)}
+.cart-btn:hover{background:var(--ink);color:var(--paper)}
+.cart-btn:hover span{background:var(--paper);color:var(--ink)}
+
+/* buttons, chips, cards */
+.btn,.pill.ghost{background:var(--surface);color:var(--ink)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.chip{background:var(--surface)}
+.chip[aria-selected=true]{background:var(--ink);color:var(--paper)}
+.card,.app,.steps li,.calc,.faq details,.custom,.rm,.opt label,.seg label,.guide-links a,.related a,.gcard{background:var(--surface)}
+.app.live:hover{background:var(--ink);color:var(--paper)}
+.special{background:var(--surface)}
+.chips{background:var(--paper)}
+.face{border-color:var(--paper)}
+.guide-links a:hover{color:var(--link)}
+.cartbar button,.toast{color:var(--paper)}
+
+/* forms and dialogs */
+dialog{background:var(--surface);color:var(--ink)}
+.qty-row{background:var(--surface)}
+.qty{background:var(--surface)}
+input,select,textarea{background:#14110f;color:var(--ink)}
+input::placeholder,textarea::placeholder{color:#8e8379}
+
+/* guide pages: links and headings read on dark */
+.gdoc a,.crumbs a{color:var(--link)}
+.gdoc .gcta a.pill.solid{color:#fff}
+.gdoc .gcta a.pill.ghost{color:var(--ink);border-color:var(--ink)}
+.gdoc h2{color:var(--brand-light)}
+
+/* food photos are cut-outs on white and rely on a light plate behind them, so the plate stays light in dark mode */
+.card .shot,.item-shot,.face,.lines li.has-img .lt{background:#fff1e3}
+.lines li.has-img .lt{border-radius:10px}
