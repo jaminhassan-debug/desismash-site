@@ -60,7 +60,7 @@ window.DESI = {
   announcement: "Launch weekend: first 50 orders get a free dip pot",
 
   // This week's headline burger (menu id). Used on the home banner and the post kit.
-  special: "tikka",
+  special: "naga",
 
   // Round "story" shortcuts above the menu. Ids are burger ids, icon is one of: burger, flame, leaf, stack, onion.
   // Swap these for your real top sellers once you have a few weekends of orders.

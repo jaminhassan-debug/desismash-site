@@ -687,7 +687,7 @@
   function renderHeroImg() {
     const b = C.burgers.find((x) => x.id === C.special);
     const im = $('hero-img');
-    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg'; im.alt = b.name + ' smash burger'; }
+    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg'; im.alt = b.name + ' smash burger, ' + b.desc.replace(/\.$/, '').toLowerCase(); }
   }
 
   /* ---------- delivery on/off (set from the kitchen screen) ---------- */
