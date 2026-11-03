@@ -29,11 +29,17 @@ a,button,summary,.chip,label{-webkit-tap-highlight-color:transparent;touch-actio
 /* announcement + header */
 .announce{background:#111;color:#fff;text-align:center;font-weight:600;font-size:.86rem;padding:8px 16px;padding-top:calc(8px + env(safe-area-inset-top,0px))}
 .top{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:20px;padding:6px 20px;background:#fff;border-bottom:3px solid var(--brand)}
-.brand{grid-column:2;grid-row:1;display:block;line-height:0;text-decoration:none}
-.logo{width:80px;height:80px;object-fit:contain}
+.tl{grid-column:1;grid-row:1;display:flex;align-items:center;gap:32px;min-width:0}
+.brand{display:block;text-decoration:none;line-height:1;flex:none}
+.logo-link{grid-column:2;grid-row:1;display:block;line-height:0}
+.wordmark{display:flex;flex-direction:column;line-height:1}
+.wordmark b{font-family:var(--display);font-size:1.7rem;font-weight:700;letter-spacing:.04em;white-space:nowrap}
+.wordmark b span{color:var(--brand)}
+.wordmark small{font-size:.68rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:3px;white-space:nowrap}
+.logo{flex:none;width:72px;height:72px;object-fit:contain}
 .logo-dark{display:none}
-.foot-logo{width:110px;height:110px;margin-bottom:6px}
-.top nav{grid-column:1;grid-row:1;justify-self:start;display:flex;gap:22px;margin:0}
+.foot-logo{width:84px;height:84px}
+.top nav{display:flex;gap:22px;margin:0}
 .top nav a{text-decoration:none;font-weight:600;font-size:.95rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink)}
 .top nav a:hover{color:var(--brand)}
 .top-actions{grid-column:3;grid-row:1;justify-self:end;display:flex;gap:10px;align-items:center}
@@ -41,9 +47,8 @@ a,button,summary,.chip,label{-webkit-tap-highlight-color:transparent;touch-actio
 .cart-btn span{background:var(--ink);color:#fff;border-radius:99px;padding:1px 8px;margin-left:4px}
 .cart-btn:hover{background:var(--ink);color:#fff}
 .cart-btn:hover span{background:#fff;color:var(--ink)}
-@media(max-width:860px){.top nav{display:none}}
-@media(max-width:1100px) and (min-width:861px){.top nav{gap:16px}.top nav .nav-x{display:none}}
-@media(max-width:640px){.top-actions .pill.order{display:none}}
+@media(min-width:1001px) and (max-width:1499px){.top nav .nav-x{display:none}}
+@media(min-width:1001px) and (max-width:1180px){.top nav .nav-y{display:none}.top nav{gap:18px}}
 
 /* pills and buttons */
 .pill,.btn{font:700 .95rem var(--body);display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:10px 22px;border-radius:99px;border:2px solid transparent;text-decoration:none;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;background:none;color:var(--ink)}
@@ -259,7 +264,7 @@ input[type=radio],input[type=checkbox]{width:22px;height:22px;flex:none;padding:
   .toast{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
   .special .btn,.drops .pill{width:100%}
 }
-@media(max-width:360px){.two{grid-template-columns:1fr}.brand b{font-size:1.45rem}}
+@media(max-width:360px){.two{grid-template-columns:1fr}.wordmark b{font-size:1rem}}
 @media(min-width:900px){.toast{bottom:90px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card{transition:none}.card:not(.sold):hover{transform:none}}
 @media(hover:none){.card:not(.sold):hover{transform:none}}
@@ -275,16 +280,17 @@ input[type=radio],input[type=checkbox]{width:22px;height:22px;flex:none;padding:
 .menu-btn.on span:nth-child(2){opacity:0}
 .menu-btn.on span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 .nav-order{display:none}
-@media(max-width:860px){
-  .menu-btn{display:block;grid-column:1;grid-row:1;justify-self:start}
+@media(max-width:1000px){
+  .menu-btn{display:block;flex:none}
   .top{position:sticky}
-  .top nav{grid-area:auto;justify-self:stretch}
-  .logo{width:60px;height:60px}
+  .logo{width:52px;height:52px}
+  .wordmark b{font-size:1.3rem}
+  .wordmark small{font-size:.58rem}
   .top nav{display:none;position:absolute;left:0;right:0;top:100%;margin:0;flex-direction:column;gap:0;background:#fff;border-bottom:3px solid var(--brand);box-shadow:0 14px 24px rgba(0,0,0,.12);padding:8px 20px 16px}
   .top nav.open{display:flex}
   .top nav a{padding:14px 2px;min-height:48px;border-bottom:1px solid var(--line);font-size:1.05rem;display:flex;align-items:center}
   .top nav a.nav-order{display:flex;justify-content:center;margin-top:12px;border:0;border-radius:99px;background:var(--brand);color:#fff;font-weight:700}
-  .pill.order{display:none}
+  .top-actions .pill.order{display:none}
 }
 @media(prefers-reduced-motion:reduce){.menu-btn span{transition:none}}
 
@@ -439,10 +445,26 @@ body.is-prelaunch .cartbar,body.is-prelaunch #open-cart{display:none!important}
 body.is-prelaunch .card .btn.primary:disabled{opacity:1}
 body.is-prelaunch .hero .status{display:none}
 
-@media(max-width:420px){.top{padding-inline:12px;gap:8px}.logo{width:54px;height:54px}}
+@media(max-width:480px){.wordmark b{font-size:1.15rem}.wordmark small{font-size:.5rem;letter-spacing:.14em;margin-top:2px}}
+@media(max-width:420px){.top{padding-inline:12px;gap:8px}.logo{width:46px;height:46px}}
 
 /* sticky offsets follow the header height (logo + padding + border) */
-.block{scroll-margin-top:112px}
-.chips{top:calc(95px + env(safe-area-inset-top,0px))}
-@media(max-width:860px){.block{scroll-margin-top:92px}.chips{top:calc(75px + env(safe-area-inset-top,0px))}}
-@media(max-width:420px){.chips{top:calc(69px + env(safe-area-inset-top,0px))}}
+.block{scroll-margin-top:104px}
+.chips{top:calc(87px + env(safe-area-inset-top,0px))}
+@media(max-width:1000px){.block{scroll-margin-top:84px}.chips{top:calc(67px + env(safe-area-inset-top,0px))}}
+@media(max-width:420px){.chips{top:calc(61px + env(safe-area-inset-top,0px))}}
+
+/* small phones: the basket button becomes an icon so the logo and name stay centred */
+.cart-ico{display:none}
+@media(max-width:480px){
+  .cart-label{display:none}
+  .cart-ico{display:block}
+  .cart-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px}
+  .cart-btn span{margin-left:0}
+  .brand{gap:6px}
+  .wordmark b{font-size:1.05rem}
+  .wordmark small{font-size:.48rem;letter-spacing:.12em}
+}
+@media(max-width:340px){.wordmark b{font-size:.95rem}.wordmark small{font-size:.44rem}.logo{width:40px;height:40px}}
+@media(max-width:340px){.cart-btn{padding:6px 8px;gap:4px;min-height:40px}.cart-btn span{padding:1px 6px}}
+@media(max-width:340px){.top-actions{gap:6px}}
