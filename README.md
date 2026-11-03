@@ -126,10 +126,14 @@ Every order is saved to a private database (Supabase, London) as well as going t
 
 - `logos/logo-light.png` (orange on transparent) is used on light backgrounds, `logos/logo-dark.png` (cream on transparent) on dark ones, and the footer always uses the dark one. They sit in the middle of the header on every page.
 - `logos/logo-colour.png` is the three-colour logo. It is not used for the tab icon any more; `logos/logo-192.png` (a square version of it) is only used as the logo in Google's structured data.
-- The **browser tab icon** (`favicon.ico`, `logos/favicon-16.png`, `favicon-32.png`, `favicon-192.png`) is just the burger from the logo, in the logo's orange on a transparent background, with the lines thickened for tiny sizes. The iPhone icon (`logos/apple-touch-icon.png`) is the same burger on white, because iPhones turn transparent icons black. Icon links end in `?v=...`; change that number in the page `<head>` if you ever replace the icons.
+- The **browser tab icon** is just the burger from the logo, in the logo's orange on a transparent background, with the lines thickened for tiny sizes. The files are in `icons/` (`burger.ico`, `burger-16/32/48/96/192.png` and `burger-apple-180.png`, which is the same burger on white because iPhones turn transparent icons black); `favicon.ico` in the site root is a copy for browsers that ask for it by default. The sizes are multiples of 48 px because Google asks for that. Keep these file names and addresses stable: Google remembers the icon address.
 - **Dark mode** follows the visitor's browser or phone setting. It lives in `dark.css` and switches the logo as well, so the logo and the page can never disagree. To turn dark mode off, delete the `<link ... dark.css ...>` line in `index.html`, `privacy.html`, `terms.html` and the guide template.
 - The original logo pictures are kept in the private repo, in `assets/logos/`.
 
 ## Replacing a photo
 
 If you replace a photo in `images/` with a new one of the same name, visitors' browsers may keep showing the old one for a while. Change `imageVersion` in `config.js` (any new number, for example today's date) and every visitor fetches the new picture.
+
+## Titles and descriptions
+
+Do not use `&` or special characters in page titles, descriptions or share text (write "and"). Google and some other places show the raw code (`&amp;`) instead of the symbol. Plain apostrophes are fine.
