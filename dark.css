@@ -14,7 +14,7 @@ body{background:var(--paper);color:var(--ink)}
 
 /* header */
 .top,.gtop,.top nav,.menu-btn{background:#14110f}
-.top nav a:hover,.gtop nav a:not(.pill):hover{color:var(--link)}
+.top nav a:hover,.gtop .gn a:hover{color:var(--link)}
 .cart-btn{background:var(--surface)}
 .cart-btn span{background:var(--ink);color:var(--paper)}
 .cart-btn:hover{background:var(--ink);color:var(--paper)}
