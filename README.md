@@ -121,3 +121,10 @@ Every order is saved to a private database (Supabase, London) as well as going t
 - **Open early:** set `on: false`.
 - **After launch:** the page and search results still say "coming soon" in the page description (`index.html`, the `description`, `og:description` and `twitter:description` lines). Update them to "Pre-order Fri to Sun for collection or delivery".
 - This only switches ordering off in the website. It is not a lock on the order database, which anyone with the public key could still call directly.
+
+## Logos, tab icon and dark mode
+
+- `logos/logo-light.png` (orange on transparent) is used on light backgrounds, `logos/logo-dark.png` (cream on transparent) on dark ones, and the footer always uses the dark one. They sit in the middle of the header on every page.
+- `logos/logo-colour.png` is the three-colour logo. The browser tab icon (`favicon.ico`, `logos/favicon-32.png`), the iPhone icon (`logos/apple-touch-icon.png`) and the structured-data logo (`logos/logo-192.png`) are all made from it, as a round white badge so it reads on light and dark browser tabs.
+- **Dark mode** follows the visitor's browser or phone setting. It lives in `dark.css` and switches the logo as well, so the logo and the page can never disagree. To turn dark mode off, delete the `<link ... dark.css ...>` line in `index.html`, `privacy.html`, `terms.html` and the guide template.
+- The original logo pictures are kept in the private repo, in `assets/logos/`.

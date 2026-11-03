@@ -3,7 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#C84F00">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#C84F00" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14110f" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="/logos/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/logos/logo-192.png">
@@ -11,8 +13,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="/styles.css?v=20261103a">
-<link rel="stylesheet" href="/guides.css?v=20261103a">
+<link rel="stylesheet" href="/styles.css?v=20261103e">
+<link rel="stylesheet" href="/guides.css?v=20261103e">
+<link rel="stylesheet" href="/dark.css?v=20261103e" media="(prefers-color-scheme: dark)">
 <title>Spicy Smash Burgers: How Hot Is Too Hot? | DesiSmash</title>
 <meta name="description" content="A heat guide to spicy smash burgers: what mild, medium and hot really taste like, how to cool things down, and which burger to pick.">
 <link rel="canonical" href="https://www.desismash.co.uk/guides/spicy-smash-burgers-heat-guide/">
@@ -32,12 +35,9 @@
 </head>
 <body>
 <header class="gtop">
-  <a class="brand" href="/" aria-label="DesiSmash by Chef Hass, home"><b>DESI<span>SMASH</span></b><small>by Chef Hass</small></a>
-  <nav aria-label="Main">
-    <a class="hide-sm" href="/#menu">Menu</a>
-    <a class="hide-sm" href="/guides/">Guides</a>
-    <a class="pill order" href="/#menu">Order now</a>
-  </nav>
+  <nav class="gl" aria-label="Main"><a href="/#menu">Menu</a><a href="/guides/">Guides</a></nav>
+  <a class="brand" href="/" aria-label="DesiSmash by Chef Hass, home"><img class="logo logo-light" src="/logos/logo-light.png" alt="DesiSmash by Chef Hass" width="320" height="320"><img class="logo logo-dark" src="/logos/logo-dark.png" alt="" width="320" height="320"></a>
+  <div class="gr"><a class="pill order" href="/#menu">Order now</a></div>
 </header>
 <main>
 <article class="gdoc">
