@@ -49,3 +49,8 @@ input::placeholder,textarea::placeholder{color:#8e8379}
 /* food photos are cut-outs on white and rely on a light plate behind them, so the plate stays light in dark mode */
 .card .shot,.item-shot,.face,.lines li.has-img .lt{background:#fff1e3}
 .lines li.has-img .lt{border-radius:10px}
+
+.heat-guide{background:#1f1b18;border-color:#3a332d}.hg{background:#2a2420;border-color:#3a332d}
+.heat.h0{--hc:#5ec26a}.heat.h1{--hc:#f0c040}.heat.h2{--hc:#ff8a4c}.heat.h3{--hc:#ff5a4f}
+.info-btn{background:#2a2420;color:#ffb27a}.alc{background:#2a2420}
+.rec{background:#fff1e3;color:#1a1816}

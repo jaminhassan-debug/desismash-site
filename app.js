@@ -298,10 +298,33 @@
     dlg.close();
     addLine(line);
   };
-  [dlg, $('cart-dialog')].forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
+  [dlg, $('cart-dialog'), $('info-dialog')].forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
 
   /* ---------- menu render ---------- */
-  const heatHtml = (n) => n ? '<span class="heat" title="Spice level ' + n + ' of 3">' + '🌶'.repeat(n) + '</span>' : '';
+  const FLAME = '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M13 2c.6 3.6 4.5 5.4 4.5 10.4A5.5 5.5 0 0 1 12 18a5.5 5.5 0 0 1-5.5-5.6c0-2.2 1.2-3.7 2.4-4.8.1 1.8.9 2.8 2 3C10.1 7.3 11.3 4.6 13 2z" fill="currentColor"/></svg>';
+  const HEAT = [['Mild', 'No chilli heat'], ['Warm', 'A gentle kick of spice'], ['Medium', 'Proper chilli heat'], ['Hot', 'Our hottest, with naga chilli']];
+  const heatHtml = (n) => { n = n || 0; return '<span class="heat h' + n + '" title="Heat: ' + HEAT[n][0] + ' (' + n + ' of 3)"><span class="fl">' + [1, 2, 3].map((i) => '<i class="' + (i <= n ? 'on' : '') + '">' + FLAME + '</i>').join('') + '</span>' + HEAT[n][0] + '</span>'; };
+  const shortName = (nm) => nm.replace(/^The /, '');
+  function renderHeatGuide() {
+    const el = $('heat-guide'); if (!el) return;
+    el.innerHTML = '<div class="hg-head"><b>Heat guide</b><a href="/guides/spicy-smash-burgers-heat-guide/">How hot is hot?</a></div><div class="hg-grid">' +
+      HEAT.map((h, n) => '<div class="hg h' + n + '">' + heatHtml(n) + '<span class="hg-d">' + h[1] + '</span><span class="hg-b">' + C.burgers.filter((b) => (b.heat || 0) === n).map((b) => esc(shortName(b.name))).join(', ') + '</span></div>').join('') + '</div>';
+  }
+  const INFO = window.DESI_INFO || null;
+  function openInfo(id) {
+    const b = C.burgers.find((x) => x.id === id), d = INFO && INFO.burgers[id]; if (!b || !d) return;
+    $('info-title').textContent = b.name;
+    const rows = Object.keys(d.nutrition);
+    const labels = INFO.labels;
+    let html = '<h4>Estimated nutrition, burger only</h4><table class="nt"><thead><tr><th>' + (b.veg ? '' : 'Patty') + '</th><th>Calories</th><th>Protein</th></tr></thead><tbody>' +
+      rows.map((p) => '<tr><td>' + esc(b.veg ? 'As served' : p) + '</td><td>' + esc(d.nutrition[p].kcal) + ' kcal</td><td>' + esc(d.nutrition[p].protein) + ' g</td></tr>').join('') + '</tbody></table>' +
+      '<p class="fine">Estimates from typical ingredients and our recipe weights, not lab tested, so real values vary. Fries add about 540 kcal and 7 g protein, a can 0 to 139 kcal.</p>' +
+      '<h4>Allergens</h4><p class="al">' + d.allergens.map((k) => '<span class="alc">' + esc(labels[k]) + '</span>').join('') + '</p>' +
+      (!b.veg && d.patty_extra && d.patty_extra['Chicken Desi'] ? '<p class="fine">The Chicken Desi patty also contains milk (butter).</p>' : '') +
+      '<p class="fine">Cooked on shared equipment, so we cannot guarantee any item is free from an allergen. Tell us about any allergy when you order. <a href="/allergens/">Full allergen and nutrition chart</a></p>';
+    $('info-body').innerHTML = html;
+    $('info-dialog').showModal();
+  }
   let filter = 'all';
   const FILTERS = [['all', 'All'], ['1', 'Classics'], ['2', 'Gourmet'], ['3', 'Heavyweight'], ['veg', 'Vegetarian']];
 
@@ -313,7 +336,7 @@
     $('burger-grid').innerHTML = list.map((b) => {
       const t = C.tiers[b.tier], sold = C.soldOut.includes(b.id);
       return '<article class="card' + (sold ? ' sold' : '') + '">' +
-        '<div class="shot"><img src="images/' + b.id + '.jpg' + IV + '" alt="' + esc(b.name) + '" width="560" height="420" loading="lazy" decoding="async"></div>' +
+        '<div class="shot">' + ((C.recommended || []).includes(b.id) ? '<span class="rec">★ Chef Hass recommends</span>' : '') + (INFO && INFO.burgers[b.id] ? '<button type="button" class="info-btn" data-info="' + b.id + '" aria-label="Calorie and protein estimates and allergens for ' + esc(b.name) + '" title="Estimates and allergens">i</button>' : '') + '<img src="images/' + b.id + '.jpg' + IV + '" alt="' + esc(b.name) + '" width="560" height="420" loading="lazy" decoding="async"></div>' +
         '<h3>' + esc(b.name) + '</h3>' +
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
@@ -332,6 +355,7 @@
   }
   $('chips').addEventListener('click', (e) => { const f = e.target.dataset.f; if (f) { filter = f; renderChips(); renderBurgers(); } });
   document.addEventListener('click', (e) => {
+    const inf = e.target.closest('[data-info]'); if (inf) { openInfo(inf.dataset.info); return; }
     const b = e.target.closest('[data-burger]'); if (b) openBurger(b.dataset.burger);
     const s = e.target.closest('[data-side]'); if (s) openSide(s.dataset.side);
   });
@@ -838,7 +862,7 @@
   $('join').href = C.whatsapp ? 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi Chef Hass, add me to the DesiSmash drop list') : '#';
   if (!C.whatsapp) $('join').setAttribute('aria-disabled', 'true');
   renderStatus(); setInterval(renderStatus, 60000);
-  renderChips(); renderBurgers(); renderSides(); renderSpecial(); renderStories(); renderHeroImg();
+  renderHeatGuide(); renderChips(); renderBurgers(); renderSides(); renderSpecial(); renderStories(); renderHeroImg();
   linkRow($('apps-row'), [['Uber Eats', 'Order on Uber Eats', C.apps.uberEats], ['Deliveroo', 'Order on Deliveroo', C.apps.deliveroo], ['Just Eat', 'Order on Just Eat', C.apps.justEat]]);
   linkRow($('social-row'), [['Instagram', 'Follow for weekly drops', C.social.instagram], ['TikTok', 'Watch the smash', C.social.tiktok], ['Facebook', 'Join the page', C.social.facebook]]);
   fillDays(); renderCart();

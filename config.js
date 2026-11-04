@@ -81,6 +81,9 @@ window.DESI = {
   // Banner above the header. Empty string hides it.
   announcement: "Launch weekend: first 50 orders get a free dip pot",
 
+  // Burgers that get the "Chef Hass recommends" badge (menu ids).
+  recommended: ["og", "naga"],
+
   // This week's headline burger (menu id). Used on the home banner and the post kit.
   special: "naga",
 
