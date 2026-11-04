@@ -472,3 +472,7 @@ body.is-prelaunch .hero .status{display:none}
 /* collection only badge in the hero */
 .coll-badge{align-self:flex-start;display:inline-block;margin:0;padding:8px 18px;border-radius:99px;background:#fff;color:var(--brand-dark);border:2px solid #fff;font-weight:700;font-size:.85rem;letter-spacing:.07em;text-transform:uppercase;line-height:1.2}
 @media(max-width:480px){.coll-badge{font-size:.74rem;padding:7px 14px}}
+.halal-chip{display:inline-flex;align-items:center;gap:5px;margin-left:10px;padding:2px 10px;border:1px solid rgba(255,255,255,.55);border-radius:99px;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;vertical-align:middle}
+.ar{font-family:'Noto Naskh Arabic','Geeza Pro','Segoe UI',Tahoma,'Arial',serif;font-weight:700;font-size:1.15em;letter-spacing:0;text-transform:none;line-height:1}
+.halal-chip .ar{font-size:1.25em;padding-right:7px;border-right:1px solid rgba(255,255,255,.45)}
+@media(max-width:480px){.halal-chip{margin:6px 0 0;display:flex;width:max-content}}
