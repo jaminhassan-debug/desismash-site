@@ -61,6 +61,7 @@ window.DESI = {
   launch: {
     on: true,
     at: "2026-12-04T17:00:00+00:00",
+    preorder: true,   // true = people can pre-order launch-weekend slots now; false = ordering stays locked until the launch time
     label: "Friday 4 December at 5 pm"
   },
 

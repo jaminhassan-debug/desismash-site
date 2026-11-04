@@ -149,3 +149,7 @@ Do not use `&` or special characters in page titles, descriptions or share text 
 **To offer our own delivery again:** set `delivery.on` to `true` in `config.js`. The home page wording switches back by itself. Then ask for the guides to be rebuilt with `DELIVERY_ON = True` (removes the Update boxes), and update the search description in `index.html`, the structured data `deliveryMethod`, and the Google Business Profile.
 
 **When the delivery apps go live:** paste each store link into `apps` in `config.js` (the buttons stop saying "Coming soon"), then update the "Delivery coming soon" wording in `index.html`.
+
+### Pre-orders before launch
+
+In `config.js`, `launch.preorder: true` lets people pre-order launch-weekend slots while the countdown is still running. The slot picker starts at the launch day and time (Fri 4 Dec, 5 pm) and the page says "Pre-orders open". Set `preorder: false` to lock ordering until the launch time again. After the launch time the normal rules apply (45-minute lead time).

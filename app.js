@@ -12,12 +12,15 @@
   const launchAt = () => (C.launch && C.launch.on && C.launch.at ? Date.parse(C.launch.at) || 0 : 0);
   const prelaunch = () => launchAt() > Date.now();
   const launchMsg = () => 'Coming soon. Ordering opens ' + ((C.launch && C.launch.label) || 'soon') + '.';
-  const isClosed = () => prelaunch() || !!(C.closed && C.closed.on);
-  const closedMsg = () => (prelaunch() ? launchMsg() : (C.closed && C.closed.message) || 'We are closed right now.');
+  // Pre-orders: while the launch date is still ahead, ordering can be open for the launch weekend (launch.preorder: true).
+  // Slots then start at the launch time, and the page still shows the countdown.
+  const preorderOn = () => prelaunch() && !!(C.launch && C.launch.preorder);
+  const isClosed = () => (prelaunch() && !preorderOn()) || !!(C.closed && C.closed.on);
+  const closedMsg = () => (prelaunch() && !preorderOn() ? launchMsg() : (C.closed && C.closed.message) || 'We are closed right now.');
 
   /* ---------- UK time ---------- */
-  function londonNow() {
-    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+  function londonNow(at) {
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(at || new Date());
     const g = (t) => +parts.find((p) => p.type === t).value;
     return { y: g('year'), m: g('month'), d: g('day'), mins: g('hour') * 60 + g('minute') };
   }
@@ -26,25 +29,28 @@
   const clock = (mins) => String(Math.floor(mins / 60)).padStart(2, '0') + ':' + String(mins % 60).padStart(2, '0');
 
   function openDays(count) {
-    const now = londonNow();
+    // Before launch (pre-orders) the first day offered is the launch day, from the launch time.
+    const pre = preorderOn();
+    const now = pre ? londonNow(new Date(launchAt())) : londonNow();
     const out = [];
     for (let off = 0; off < 14 && out.length < count; off++) {
       const dt = new Date(Date.UTC(now.y, now.m - 1, now.d + off));
       const dow = dt.getUTCDay();
       const h = C.hours[dow];
       if (!h) continue;
-      if (off === 0 && now.mins + C.minLeadMinutes > toMins(C.lastOrderTime)) continue;
-      out.push({ off, dow, date: dt, open: toMins(h[0]), close: toMins(h[1]) });
+      if (!pre && off === 0 && now.mins + C.minLeadMinutes > toMins(C.lastOrderTime)) continue;
+      out.push({ off, dow, date: dt, open: toMins(h[0]), close: toMins(h[1]), today: !pre && off === 0, launchDay: pre && off === 0, launchMins: now.mins });
     }
     return out;
   }
-  const dayLabel = (d) => (d.off === 0 ? 'Today' : DOW[d.dow]) + ' ' + d.date.getUTCDate() + ' ' + MON[d.date.getUTCMonth()];
+  const dayLabel = (d) => (d.today ? 'Today' : DOW[d.dow]) + ' ' + d.date.getUTCDate() + ' ' + MON[d.date.getUTCMonth()];
   function slotsFor(d) {
     const now = londonNow();
     const last = toMins(C.lastOrderTime);
     const res = [];
     for (let t = d.open; t <= last; t += C.slotMinutes) {
-      if (d.off === 0 && t < now.mins + C.minLeadMinutes) continue;
+      if (d.today && t < now.mins + C.minLeadMinutes) continue;
+      if (d.launchDay && t < d.launchMins) continue;
       res.push(t);
     }
     return res;
@@ -52,7 +58,7 @@
 
   function renderStatus() {
     const el = $('status');
-    if (prelaunch()) { el.className = 'status closed'; el.textContent = 'Coming soon'; return; }
+    if (prelaunch() && !preorderOn()) { el.className = 'status closed'; el.textContent = 'Coming soon'; return; }
     if (isClosed()) { el.className = 'status closed'; el.textContent = closedMsg(); return; }
     const now = londonNow();
     const dow = new Date(Date.UTC(now.y, now.m - 1, now.d)).getUTCDay();
@@ -303,7 +309,7 @@
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
         '<div class="foot"><span class="price">' + money(t.burger) + '<small>meal ' + money(t.meal) + '</small></span>' +
-        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : prelaunch() ? 'Coming soon' : isClosed() ? 'Closed' : 'Add') + '</button></div></article>';
+        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : prelaunch() && !preorderOn() ? 'Coming soon' : isClosed() ? 'Closed' : 'Add') + '</button></div></article>';
     }).join('');
   }
   function renderSides() {
@@ -326,7 +332,7 @@
     if (!b || C.soldOut.includes(b.id)) return;
     const el = $('special');
     el.hidden = false;
-    el.innerHTML = '<div class="inner"><div><span class="eyebrow">This week\'s special</span><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p></div><button class="btn primary" data-burger="' + b.id + '">' + (prelaunch() ? 'Coming soon' : 'Order it') + '</button></div>';
+    el.innerHTML = '<div class="inner"><div><span class="eyebrow">This week\'s special</span><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p></div><button class="btn primary" data-burger="' + b.id + '">' + (prelaunch() && !preorderOn() ? 'Coming soon' : 'Order it') + '</button></div>';
   }
 
   function linkRow(el, items) {
@@ -731,11 +737,11 @@
       const fixed = collectionOnly();
       $('faq-del').textContent = fixed ? 'Not yet. We are collection only for now, and collection is always free. Delivery through the delivery apps is coming soon.' : 'We are not delivering right now. Collection only, and it is always free.';
       $('area').textContent = fixed ? 'Collection only for now. Collection is always free, and delivery apps are coming soon.' : 'Delivery is switched off right now. Collection is free.';
-      if (!isClosed()) { $('announce').textContent = fixed ? ((C.delivery && C.delivery.note) || 'Collection only for now.') : 'Collection only right now. Delivery is switched off.'; $('announce').hidden = false; }
+      if (!isClosed() && !preorderOn()) { $('announce').textContent = fixed ? ((C.delivery && C.delivery.note) || 'Collection only for now.') : 'Collection only right now. Delivery is switched off.'; $('announce').hidden = false; }
     } else {
       $('faq-del').textContent = C.deliveryArea;
       $('area').textContent = 'Delivery: ' + C.deliveryArea;
-      if (!isClosed()) { if (C.announcement) { $('announce').textContent = C.announcement; $('announce').hidden = false; } else { $('announce').hidden = true; } }
+      if (!isClosed() && !preorderOn()) { if (C.announcement) { $('announce').textContent = C.announcement; $('announce').hidden = false; } else { $('announce').hidden = true; } }
     }
     renderCart();
   }
@@ -764,9 +770,15 @@
     $('launch-date').textContent = label;
     $('launch-time').textContent = label;
     $('launch-time').setAttribute('datetime', C.launch.at);
-    document.querySelectorAll('a.nav-order, .top-actions a.pill.order').forEach((a) => { a.textContent = 'See menu'; });
+    if (preorderOn()) {
+      const k = box.querySelector('.launch-kicker'); if (k) k.textContent = 'Pre-orders open';
+      const n = box.querySelector('.launch-note'); if (n) n.innerHTML = 'Book your launch-weekend slot now. We open <time id="launch-time"></time>.';
+      $('launch-time').textContent = label; $('launch-time').setAttribute('datetime', C.launch.at);
+      const po = $('hero-order'); if (po) { po.textContent = 'Pre-order now'; po.setAttribute('href', '#menu'); }
+    }
+    if (!preorderOn()) document.querySelectorAll('a.nav-order, .top-actions a.pill.order').forEach((a) => { a.textContent = 'See menu'; });
     const first = $('hero-order');
-    if (first) {
+    if (first && !preorderOn()) {
       first.textContent = 'Join the drop list';
       if (C.whatsapp) { first.href = 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi Chef Hass, add me to the DesiSmash drop list'); first.target = '_blank'; first.rel = 'noopener'; }
     }
@@ -788,7 +800,8 @@
   $('faq-all').textContent = C.allergenNote;
   $('faq-del').textContent = C.deliveryArea;
   $('area').textContent = 'Delivery: ' + C.deliveryArea;
-  if (prelaunch()) { $('announce').textContent = launchMsg() + (C.announcement ? ' ' + C.announcement : ''); $('announce').hidden = false; document.body.classList.add('is-closed', 'is-prelaunch'); startLaunch(); }
+  if (preorderOn()) { $('announce').textContent = 'Pre-orders open for launch weekend. We open ' + ((C.launch && C.launch.label) || 'soon') + '.' + (C.announcement ? ' ' + C.announcement : ''); $('announce').hidden = false; startLaunch(); }
+  else if (prelaunch()) { $('announce').textContent = launchMsg() + (C.announcement ? ' ' + C.announcement : ''); $('announce').hidden = false; document.body.classList.add('is-closed', 'is-prelaunch'); startLaunch(); }
   else if (isClosed()) { $('announce').textContent = closedMsg(); $('announce').hidden = false; document.body.classList.add('is-closed'); }
   else if (C.announcement) { $('announce').textContent = C.announcement; $('announce').hidden = false; }
   $('join').href = C.whatsapp ? 'https://wa.me/' + C.whatsapp.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi Chef Hass, add me to the DesiSmash drop list') : '#';
