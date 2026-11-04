@@ -15,6 +15,7 @@
   // Pre-orders: while the launch date is still ahead, ordering can be open for the launch weekend (launch.preorder: true).
   // Slots then start at the launch time, and the page still shows the countdown.
   const preorderOn = () => prelaunch() && !!(C.launch && C.launch.preorder);
+  const addLabel = () => (preorderOn() ? 'Pre-order' : 'Add');
   const isClosed = () => (prelaunch() && !preorderOn()) || !!(C.closed && C.closed.on);
   const closedMsg = () => (prelaunch() && !preorderOn() ? launchMsg() : (C.closed && C.closed.message) || 'We are closed right now.');
 
@@ -317,7 +318,7 @@
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
         '<div class="foot"><span class="price">' + money(t.burger) + '<small>meal ' + money(t.meal) + '</small></span>' +
-        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : prelaunch() && !preorderOn() ? 'Coming soon' : isClosed() ? 'Closed' : 'Add') + '</button></div></article>';
+        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : prelaunch() && !preorderOn() ? 'Coming soon' : isClosed() ? 'Closed' : addLabel()) + '</button></div></article>';
     }).join('');
   }
   function renderSides() {
@@ -326,7 +327,7 @@
       return '<article class="card' + (sold ? ' sold' : '') + '">' +
         '<div class="shot"><img src="images/side-' + esc(s.id) + '.jpg' + IV + '" alt="' + esc(s.name) + '" width="560" height="373" loading="lazy" decoding="async"></div>' +
         '<h3>' + esc(s.name) + '</h3><p>' + esc(s.desc) + '</p>' +
-        '<div class="foot"><span class="price">' + money(s.price) + '</span><button class="btn" data-side="' + s.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : 'Add') + '</button></div></article>';
+        '<div class="foot"><span class="price">' + money(s.price) + '</span><button class="btn" data-side="' + s.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : addLabel()) + '</button></div></article>';
     }).join('');
   }
   $('chips').addEventListener('click', (e) => { const f = e.target.dataset.f; if (f) { filter = f; renderChips(); renderBurgers(); } });
@@ -340,7 +341,7 @@
     if (!b || C.soldOut.includes(b.id)) return;
     const el = $('special');
     el.hidden = false;
-    el.innerHTML = '<div class="inner"><div><span class="eyebrow">This week\'s special</span><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p></div><button class="btn primary" data-burger="' + b.id + '">' + (prelaunch() && !preorderOn() ? 'Coming soon' : 'Order it') + '</button></div>';
+    el.innerHTML = '<div class="inner"><div><span class="eyebrow">This week\'s special</span><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p></div><button class="btn primary" data-burger="' + b.id + '">' + (prelaunch() && !preorderOn() ? 'Coming soon' : preorderOn() ? 'Pre-order it' : 'Order it') + '</button></div>';
   }
 
   function linkRow(el, items) {
@@ -825,6 +826,11 @@
   $('faq-all').textContent = C.allergenNote;
   $('faq-del').textContent = C.deliveryArea;
   $('area').textContent = 'Delivery: ' + C.deliveryArea;
+  if (preorderOn()) {
+    const ia = $('item-add'); if (ia && ia.firstChild) ia.firstChild.textContent = 'Pre-order · ';
+    const cg = document.querySelector('#cartbar-btn .go'); if (cg) cg.textContent = 'View pre-order';
+    const sb = $('send'); if (sb) sb.textContent = 'Send pre-order on WhatsApp';
+  }
   if (preorderOn()) { $('announce').textContent = 'Pre-orders open for launch weekend. We open ' + ((C.launch && C.launch.label) || 'soon') + '.' + (C.announcement ? ' ' + C.announcement : ''); $('announce').hidden = false; startLaunch(); }
   else if (prelaunch()) { $('announce').textContent = launchMsg() + (C.announcement ? ' ' + C.announcement : ''); $('announce').hidden = false; document.body.classList.add('is-closed', 'is-prelaunch'); startLaunch(); }
   else if (isClosed()) { $('announce').textContent = closedMsg(); $('announce').hidden = false; document.body.classList.add('is-closed'); }
