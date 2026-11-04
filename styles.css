@@ -502,3 +502,21 @@ body.is-prelaunch .hero .status{display:none}
 #info-body{padding:0 20px 20px}#info-body h4{margin:14px 0 6px}
 .nt{width:100%;border-collapse:collapse;font-size:.92rem}.nt th,.nt td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
 .al{display:flex;flex-wrap:wrap;gap:6px;margin:0}.alc{background:var(--cream);border:1px solid var(--brand);border-radius:99px;padding:3px 10px;font-size:.82rem;font-weight:600}
+
+/* meet Chef Hass */
+.chef-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:36px;align-items:center}
+.chef-portrait{margin:0}.chef-portrait img{width:100%;height:auto;border-radius:18px;box-shadow:0 18px 40px rgba(60,30,0,.2);display:block}
+.chef-copy .eyebrow{color:var(--brand-dark);font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.8rem;margin:0 0 4px}
+.chef-copy h2{margin:0 0 6px}
+.chef-lead{font-size:1.2rem;font-weight:600;color:var(--brand-dark);margin:0 0 12px}
+.chef-facts{list-style:none;padding:0;margin:16px 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.chef-facts li{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.92rem}
+.chef-facts b{display:block;color:var(--brand-dark)}
+.chef-wide{margin:32px 0 0;position:relative}
+.chef-wide img{width:100%;max-height:460px;object-fit:cover;object-position:center 40%;border-radius:18px;display:block}
+.chef-wide figcaption{position:absolute;left:16px;bottom:14px;background:rgba(20,17,15,.78);color:#fff;padding:6px 14px;border-radius:99px;font-weight:600;font-size:.9rem}
+@media(max-width:820px){.chef-grid{grid-template-columns:1fr;gap:20px}.chef-portrait{max-width:420px;margin:0 auto}}
+.chef-copy p{margin:0 0 12px}.chef-copy p.eyebrow{margin:0 0 4px}.chef-copy .chef-lead{margin:0 0 14px}
+.chef-copy .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.pill.outline{background:transparent;border:2px solid var(--brand);color:var(--brand-dark)}
+.pill.outline:hover{background:var(--brand);color:#fff}
