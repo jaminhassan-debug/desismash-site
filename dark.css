@@ -54,3 +54,5 @@ input::placeholder,textarea::placeholder{color:#8e8379}
 .heat.h0{--hc:#5ec26a}.heat.h1{--hc:#f0c040}.heat.h2{--hc:#ff8a4c}.heat.h3{--hc:#ff5a4f}
 .info-btn{background:#2a2420;color:#ffb27a}.alc{background:#2a2420}
 .rec{background:#fff1e3;color:#1a1816}
+.chef-facts li{background:#2a2420;border-color:#3a332d}.chef-lead,.chef-facts b,.chef-copy .eyebrow{color:#ffb27a}
+.pill.outline{border-color:#ff8a33;color:#ffb27a}
