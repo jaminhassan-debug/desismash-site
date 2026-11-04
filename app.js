@@ -398,16 +398,26 @@
   }).join('') + '<div class="band"><span>Collection</span><b>Free</b></div>';
 
   /* ---------- checkout ---------- */
+  // Slots you have marked full in config.js (fullSlots: ["2026-12-04 18:30"]). The cap itself is shown to customers as slotCap.
+  const slotKey = (d, t) => d.date.toISOString().slice(0, 10) + ' ' + clock(t);
+  const isFull = (d, t) => (C.fullSlots || []).includes(slotKey(d, t));
   function fillDays() {
     const days = openDays(3);
-    $('f-day').innerHTML = days.map((d, i) => '<option value="' + i + '">' + dayLabel(d) + '</option>').join('');
+    $('f-day').innerHTML = days.map((d, i) => '<option value="' + i + '">' + dayLabel(d) + (slotsFor(d).length && slotsFor(d).every((t) => isFull(d, t)) ? ' (full)' : '') + '</option>').join('');
+    // start on the first day that still has a free slot
+    const firstFree = days.findIndex((d) => slotsFor(d).some((t) => !isFull(d, t)));
+    if (firstFree > 0) $('f-day').value = String(firstFree);
     fillSlots();
+    const n = $('slot-note');
+    if (n) { n.textContent = C.slotCap ? 'Each 30-minute slot takes up to ' + C.slotCap + ' orders. Full slots cannot be chosen.' : ''; n.hidden = !C.slotCap; }
   }
   function fillSlots() {
     const days = openDays(3);
     const d = days[+$('f-day').value] || days[0];
     const s = d ? slotsFor(d) : [];
-    $('f-slot').innerHTML = s.length ? s.map((t) => '<option value="' + t + '">' + fmtTime(t) + '</option>').join('') : '<option value="">No slots left</option>';
+    $('f-slot').innerHTML = s.length ? s.map((t) => '<option value="' + t + '"' + (d && isFull(d, t) ? ' disabled' : '') + '>' + fmtTime(t) + (d && isFull(d, t) ? ' (full)' : '') + '</option>').join('') : '<option value="">No slots left</option>';
+    const free = d ? s.find((t) => !isFull(d, t)) : null;
+    if (s.length) $('f-slot').value = free == null ? '' : String(free);
   }
   $('f-day').onchange = fillSlots;
   document.querySelectorAll('input[name=mode]').forEach((r) => r.addEventListener('change', () => {
@@ -420,20 +430,24 @@
     const days = openDays(3);
     const d = days[+$('f-day').value] || days[0];
     const t = +$('f-slot').value;
-    const lines = cart.map((l) => l.qty + 'x ' + l.name + (l.detail ? ' (' + l.detail + ')' : '') + ' - ' + money(l.unit * l.qty));
+    const lines = cart.map((l) => '• ' + l.qty + 'x ' + l.name + (l.detail ? ' (' + l.detail + ')' : '') + ' - ' + money(l.unit * l.qty));
     const sub = subtotal(), del = delivery();
-    const out = ['*New DesiSmash order*', '',
-      'Name: ' + $('f-name').value.trim(),
-      'Mobile: ' + $('f-phone').value.trim(),
-      mode() + ': ' + (d ? dayLabel(d) : '') + ' at ' + fmtTime(t)];
-    if (mode() === 'Delivery') out.push('Address: ' + $('f-addr').value.trim() + ', ' + $('f-post').value.trim());
-    out.push('', ...lines, '', 'Subtotal: ' + money(sub));
-    if (mode() === 'Delivery' && D.info) out.push('Delivery (' + D.info.miles.toFixed(1) + ' mi): ' + (del ? money(del) : 'Free'));
-    out.push('*Total: ' + money(sub + del) + '* (pay on ' + (mode() === 'Delivery' ? 'delivery' : 'collection') + ')');
+    const isDel = mode() === 'Delivery';
+    const rule = '━━━━━━━━━━━━━━';
+    const out = ['🍔 *NEW DESISMASH ORDER*', rule,
+      '👤 *' + $('f-name').value.trim() + '*',
+      '📞 ' + $('f-phone').value.trim(),
+      '⏰ *' + (isDel ? 'DELIVER' : 'COLLECT') + ': ' + (d ? dayLabel(d) : '') + ' at ' + fmtTime(t) + '*',
+      '💷 *TOTAL: ' + money(sub + del) + '* (pay on ' + (isDel ? 'delivery' : 'collection') + ')'];
+    if (isDel) out.push('📍 ' + $('f-addr').value.trim() + ', ' + $('f-post').value.trim());
+    out.push(rule, '*ITEMS*', ...lines);
+    if (isDel) out.push('', 'Subtotal: ' + money(sub));
+    if (isDel && D.info) out.push('Delivery (' + D.info.miles.toFixed(1) + ' mi): ' + (del ? money(del) : 'Free'));
+    const note = $('f-note').value.trim();
+    if (note) out.push(rule, '⚠️ *NOTES / ALLERGIES:* ' + note);
+    out.push(rule);
     if ($('f-email').value.trim()) out.push('Email: ' + $('f-email').value.trim());
     out.push('Offers OK: ' + ($('f-mkt').checked ? 'yes' : 'no'));
-    const note = $('f-note').value.trim();
-    if (note) out.push('', 'Notes/allergies: ' + note);
     return out.join('\n');
   }
   function validate() {
@@ -441,6 +455,7 @@
     $('f-error').hidden = true;
     if (!cart.length) return err('Your basket is empty.');
     if (!$('f-slot').value) return err('No pickup slots are left for that day. Choose another day.');
+    { const dd = openDays(3); const d0 = dd[+$('f-day').value] || dd[0]; if (d0 && isFull(d0, +$('f-slot').value)) return err('That slot is full. Please choose another time.'); }
     if ($('f-name').value.trim().length < 2) return err('Enter your name.');
     if ($('f-phone').value.replace(/\D/g, '').length < 10) return err('Enter a mobile number we can reach you on.');
     if (mode() === 'Delivery') {

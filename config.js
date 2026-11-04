@@ -44,6 +44,12 @@ window.DESI = {
   // Turn items off for the weekend: list menu ids or side ids, e.g. ["truffle", "paneer"].
   soldOut: [],
 
+  // Orders each 30-minute slot can take. This is shown to customers. While the order database is off the site cannot count orders,
+  // so YOU mark a slot full by adding it to fullSlots below.
+  slotCap: 5,
+  // Full slots, UK time, 24-hour clock, as "YYYY-MM-DD HH:MM". They show as "(full)" and cannot be picked. Example: ["2026-12-04 18:30", "2026-12-05 19:00"]
+  fullSlots: [],
+
   // Closed weekend switch. Set on: true to stop orders and show the message everywhere. Change back to false to reopen.
   closed: { on: false, message: "We are closed this weekend. Back next Friday at 5 pm." },
 
