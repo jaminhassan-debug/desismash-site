@@ -137,3 +137,15 @@ If you replace a photo in `images/` with a new one of the same name, visitors' b
 ## Titles and descriptions
 
 Do not use `&` or special characters in page titles, descriptions or share text (write "and"). Google and some other places show the raw code (`&amp;`) instead of the symbol. Plain apostrophes are fine.
+
+## Collection only mode
+
+`delivery` in `config.js` controls whether the site offers delivery. While `delivery.on` is `false` (the current setting):
+- the Delivery option, address form and fee calculator are hidden, and the order is always collection;
+- the home page says "Collection only for now" and that delivery through the delivery apps is coming soon;
+- the guides show an "Update" box under their opening paragraph (the guides are built with `DELIVERY_ON = False`);
+- it overrides the delivery switch on the kitchen screen, so that cannot turn delivery back on by accident.
+
+**To offer our own delivery again:** set `delivery.on` to `true` in `config.js`. The home page wording switches back by itself. Then ask for the guides to be rebuilt with `DELIVERY_ON = True` (removes the Update boxes), and update the search description in `index.html`, the structured data `deliveryMethod`, and the Google Business Profile.
+
+**When the delivery apps go live:** paste each store link into `apps` in `config.js` (the buttons stop saying "Coming soon"), then update the "Delivery coming soon" wording in `index.html`.

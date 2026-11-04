@@ -47,6 +47,14 @@ window.DESI = {
   // Closed weekend switch. Set on: true to stop orders and show the message everywhere. Change back to false to reopen.
   closed: { on: false, message: "We are closed this weekend. Back next Friday at 5 pm." },
 
+  // Delivery switch. on: false means COLLECTION ONLY: the delivery option, address form and fee calculator are hidden
+  // and the site says delivery through the delivery apps is coming soon. Set on: true to offer our own delivery again
+  // (see README, "Collection only mode"). This overrides the delivery switch on the kitchen screen.
+  delivery: {
+    on: false,
+    note: "Collection only for now. Delivery through the delivery apps is coming soon."
+  },
+
   // Coming-soon mode. While `on` is true and the date has not passed, ordering is switched off everywhere,
   // the home page shows a countdown, and the menu is for browsing only. It opens by itself at `at`.
   // `at` is UK time (GMT in winter, e.g. +00:00; BST in summer is +01:00). Set `on: false` to open straight away.
@@ -142,7 +150,7 @@ window.DESI = {
   // Things people can buy for home. Prices here are placeholders: set your own.
   shop: [
     { id: "spice", name: "Chef Hass Desi Smash Spice Blend", size: "100g jar", price: 6.99, type: "order",
-      desc: "The blend behind the Desi patties. Add a jar to your weekend order and collect or have it delivered with your burgers." },
+      desc: "The blend behind the Desi patties. Add a jar to your weekend order and collect it with your burgers." },
     { id: "book", name: "Desi Smash At Home Recipe Book", size: "PDF, 7 pages", price: 4.99, type: "link", url: "",
       desc: "All 10 burgers, 5 sauces, fries and a cook-along plan, scaled for four at home. Paste your Payhip, Gumroad or Stripe link in url to start selling." }
   ],
