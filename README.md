@@ -167,3 +167,10 @@ The order text is laid out like a kitchen ticket: customer name, phone, when the
 `maxItems: 12` and `maxTotal: 60` in `config.js` stop very large baskets: the customer sees "Orders over 12 items or £60 need a quick chat first. Message us on WhatsApp" and cannot send. Set either to 0 for no limit.
 
 The order is only booked when Chef Hass messages the customer and they reply YES. The WhatsApp order text carries a "NEEDS CONFIRMING" line, and the on-screen confirmation, FAQ and guides say the same.
+
+### Allergens, nutrition estimates, heat guide and Chef Hass recommends
+
+- `menu-info.js` holds the allergens and calorie/protein **estimates** for each burger, side and dip. It is generated from the kitchen recipes and the nutrition workbook. The same data builds the `/allergens/` page. **Check every allergen against your real product labels** before relying on it, and update the data if a product changes.
+- Each menu card has a small "i" button that opens the estimates and allergens for that burger. The footer links to the full chart.
+- The heat guide and the heat label on each card come from `heat` (0 to 3) on each burger in `config.js`.
+- `recommended: ["og", "naga"]` in `config.js` puts the "Chef Hass recommends" badge on those burgers.

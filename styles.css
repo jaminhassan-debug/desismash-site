@@ -479,3 +479,26 @@ body.is-prelaunch .hero .status{display:none}
 
 .patty-note{margin:14px 0 4px}
 .patty-hint{margin:0 0 8px}
+
+/* heat guide, recommended badge, info button */
+.heat{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:var(--hc,#2e7d32)}
+.heat .fl{display:inline-flex;gap:1px}
+.heat i{display:inline-flex;opacity:.22}.heat i.on{opacity:1}
+.heat.h0{--hc:#2e7d32}.heat.h1{--hc:#b07d00}.heat.h2{--hc:#e8590c}.heat.h3{--hc:#c0211a}
+.heat-guide{background:var(--grey);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 14px}
+.hg-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:10px}
+.hg-head a{font-size:.9rem;color:var(--brand-dark);font-weight:600}
+.hg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.hg{display:flex;flex-direction:column;gap:4px;background:#fff;border:1px solid var(--line);border-top:4px solid var(--hc,#2e7d32);border-radius:10px;padding:10px}
+.hg.h0{--hc:#2e7d32}.hg.h1{--hc:#d99a00}.hg.h2{--hc:#e8590c}.hg.h3{--hc:#c0211a}
+.hg .hg-d{font-size:.88rem;font-weight:600}.hg .hg-b{font-size:.8rem;color:var(--muted)}
+@media(max-width:760px){.hg-grid{grid-template-columns:1fr 1fr}}
+.card .shot{position:relative}
+.rec{position:absolute;left:10px;top:10px;z-index:2;background:#1a1816;color:#ffd45c;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:5px 10px;border-radius:99px;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.info-btn{position:absolute;right:10px;top:10px;z-index:2;width:30px;height:30px;border-radius:50%;border:2px solid var(--brand);background:#fff;color:var(--brand-dark);font:700 .95rem/1 var(--body);font-style:italic;cursor:pointer;display:grid;place-items:center;padding:0}
+.info-btn:hover{background:var(--brand);color:#fff}
+.i-ico{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:2px solid var(--brand);color:var(--brand-dark);font-style:italic;font-size:.75rem}
+.info-hint{margin:0 0 14px}
+#info-body{padding:0 20px 20px}#info-body h4{margin:14px 0 6px}
+.nt{width:100%;border-collapse:collapse;font-size:.92rem}.nt th,.nt td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left}
+.al{display:flex;flex-wrap:wrap;gap:6px;margin:0}.alc{background:var(--cream);border:1px solid var(--brand);border-radius:99px;padding:3px 10px;font-size:.82rem;font-weight:600}
