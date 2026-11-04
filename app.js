@@ -83,6 +83,12 @@
   const save = () => { try { localStorage.setItem('desismash-cart', JSON.stringify(cart)); } catch (e) { /* storage unavailable */ } };
   const subtotal = () => cart.reduce((s, l) => s + l.unit * l.qty, 0);
   const count = () => cart.reduce((s, l) => s + l.qty, 0);
+  // Big orders need a chat first (stops joke orders and protects slots). Limits live in config.js: maxItems, maxTotal.
+  const limitMsg = () => {
+    const mi = +C.maxItems || 0, mt = +C.maxTotal || 0;
+    if ((mi && count() > mi) || (mt && subtotal() > mt)) return 'Orders over ' + (mi ? mi + ' items' : '') + (mi && mt ? ' or ' : '') + (mt ? '£' + mt : '') + ' need a quick chat first. Message us on WhatsApp (' + (C.phoneDisplay || '') + ') and we will sort it.';
+    return '';
+  };
   const mode = () => document.querySelector('input[name=mode]:checked').value;
   const D = { kitchen: null, info: null };
   const normPc = (s) => s.toUpperCase().replace(/\s+/g, '');
@@ -124,6 +130,7 @@
     $('cartbar-count').textContent = n + (n === 1 ? ' item' : ' items');
     $('cartbar-total').textContent = money(subtotal());
     $('cartbar').hidden = n === 0;
+    { const lm = limitMsg(), fe = $('f-error'); if (lm) { fe.textContent = lm; fe.hidden = false; } else if (/^Orders over/.test(fe.textContent)) fe.hidden = true; }
     const confirming = !$('confirm').hidden;
     $('cart-empty').hidden = n > 0 || confirming;
     $('checkout').hidden = n === 0 || confirming;
@@ -202,7 +209,8 @@
     $('item-desc').textContent = b.desc;
     setItemImg('images/' + b.id + '.jpg' + IV, b.name);
     let html = '';
-    if (!b.veg) html += '<fieldset class="opt"><legend>Patty</legend>' + radios('patty', C.patties.map((p) => ({ label: p.label, note: p.note })), 1) + '</fieldset>';
+    if (!b.veg) html += '<fieldset class="opt"><legend>Patty</legend><p class="fine patty-hint">The photo shows a beef patty. Choose beef or chicken below.</p>' + radios('patty', C.patties.map((p) => ({ label: p.label, note: p.note })), 1) + '</fieldset>';
+    else html += '<p class="note-box patty-note">This burger has tawa-seared paneer instead of a meat patty. The photo is the paneer burger.</p>';
     html += '<fieldset class="opt"><legend>Make it a meal?</legend>' + radios('meal', [
       { label: 'Burger only', price: money(t.burger) },
       { label: 'Meal deal', note: 'Burger, seasoned fries and a can', price: money(t.meal) }
@@ -438,7 +446,8 @@
       '👤 *' + $('f-name').value.trim() + '*',
       '📞 ' + $('f-phone').value.trim(),
       '⏰ *' + (isDel ? 'DELIVER' : 'COLLECT') + ': ' + (d ? dayLabel(d) : '') + ' at ' + fmtTime(t) + '*',
-      '💷 *TOTAL: ' + money(sub + del) + '* (pay on ' + (isDel ? 'delivery' : 'collection') + ')'];
+      '💷 *TOTAL: ' + money(sub + del) + '* (pay on ' + (isDel ? 'delivery' : 'collection') + ')',
+      '🔔 *NEEDS CONFIRMING* (customer replies YES to book)'];
     if (isDel) out.push('📍 ' + $('f-addr').value.trim() + ', ' + $('f-post').value.trim());
     out.push(rule, '*ITEMS*', ...lines);
     if (isDel) out.push('', 'Subtotal: ' + money(sub));
@@ -454,6 +463,7 @@
     const err = (m) => { const e = $('f-error'); e.textContent = m; e.hidden = false; return false; };
     $('f-error').hidden = true;
     if (!cart.length) return err('Your basket is empty.');
+    if (limitMsg()) return err(limitMsg());
     if (!$('f-slot').value) return err('No pickup slots are left for that day. Choose another day.');
     { const dd = openDays(3); const d0 = dd[+$('f-day').value] || dd[0]; if (d0 && isFull(d0, +$('f-slot').value)) return err('That slot is full. Please choose another time.'); }
     if ($('f-name').value.trim().length < 2) return err('Enter your name.');
@@ -591,9 +601,9 @@
     $('cf-title').textContent = 'Thanks ' + s.name.split(' ')[0] + ', we have your order';
     const st = $('cf-status');
     if (!waUrl) st.textContent = 'Your order text is copied. Paste it to Chef Hass on WhatsApp to finish.';
-    else if (saved) st.textContent = 'Order #' + r.number + ' received. Waiting on Jay to confirm it. If you have not pressed send in WhatsApp yet, do that now so he sees it.';
+    else if (saved) st.textContent = 'Order #' + r.number + ' received. Chef Hass will message you on WhatsApp: reply YES to book it. If you have not pressed send in WhatsApp yet, do that now so he sees it.';
     else if (failed) st.textContent = 'We could not save your order online. Please make sure the WhatsApp message is sent, otherwise we will not see it.';
-    else st.textContent = 'Order received. Waiting on Jay to confirm it. If you have not pressed send in WhatsApp yet, do that now so he sees it.';
+    else st.textContent = 'Order received. Chef Hass will message you on WhatsApp: reply YES to book it. If you have not pressed send in WhatsApp yet, do that now so he sees it.';
     const rows = [['Name', s.name], ['Mobile', s.phone]];
     if (s.email) rows.push(['Email', s.email]);
     rows.push([s.mode, s.when]);
@@ -602,7 +612,7 @@
     $('cf-lines').innerHTML = s.lines.map((l) => '<li><span>' + esc(l.name) + '</span><span>' + money(l.price) + '</span></li>').join('') +
       (s.mode === 'Delivery' ? '<li><span>Delivery</span><span>' + (s.delivery ? money(s.delivery) : 'Free') + '</span></li>' : '');
     $('cf-total').textContent = money(s.total);
-    $('cf-pay').textContent = (C.emailEndpoint && s.email ? 'A confirmation email is on its way to ' + s.email + '. ' : '') + 'You pay on ' + (s.mode === 'Delivery' ? 'delivery' : 'collection') + '. Your order is only confirmed once Jay replies on WhatsApp.';
+    $('cf-pay').textContent = (C.emailEndpoint && s.email ? 'A confirmation email is on its way to ' + s.email + '. ' : '') + 'You pay on ' + (s.mode === 'Delivery' ? 'delivery' : 'collection') + '. Your order is only booked once Chef Hass messages you and you reply YES.';
     const wa = $('cf-wa');
     if (waUrl) { wa.href = waUrl; wa.hidden = false; } else wa.hidden = true;
     $('cf-copy').onclick = async () => toast((await copyText(msg)) ? 'Order copied' : 'Could not copy');
@@ -720,9 +730,9 @@
     'delivery-h': ['Delivery coming soon', 'Get burgers delivered near you'],
     'delivery-p': ['We are collection only for now. Delivery through the delivery apps is coming soon.', 'Order direct for the best price, or find us on your favourite delivery app.'],
     'how-p': ['Collect from our Leicester kitchen. Pre-order for any open slot this weekend.', 'Collect from our Leicester kitchen or have it delivered. Pre-order for any open slot this weekend.'],
-    'how-pay': ['Your order lands in our WhatsApp. We reply to confirm. Pay when you collect.', 'Your order lands in our WhatsApp. We reply to confirm. Pay on collection or delivery.'],
-    'faq-pay': ['You pay when you collect. Your order is confirmed when Chef Hass replies on WhatsApp.', 'You pay on collection or delivery. Your order is confirmed when Chef Hass replies on WhatsApp.'],
-    'send-note': ['You pay when you collect. Your order is confirmed when Chef Hass replies on WhatsApp.', 'You pay on collection or delivery. Your order is confirmed when Chef Hass replies on WhatsApp.'],
+    'how-pay': ['Your order lands in our WhatsApp. We message you to confirm: reply YES and it is booked. Pay when you collect.', 'Your order lands in our WhatsApp. We message you to confirm: reply YES and it is booked. Pay on collection or delivery.'],
+    'faq-pay': ['You pay when you collect. Your order is booked once Chef Hass messages you on WhatsApp and you reply YES.', 'You pay on collection or delivery. Your order is booked once Chef Hass messages you on WhatsApp and you reply YES.'],
+    'send-note': ['You pay when you collect. Your order is booked once Chef Hass messages you on WhatsApp and you reply YES.', 'You pay on collection or delivery. Your order is booked once Chef Hass messages you on WhatsApp and you reply YES.'],
     'faq-where': ['DesiSmash cooks chef-made smash burgers every Friday, Saturday and Sunday from 5 pm. Pre-order on this website and collect for free from our Leicester kitchen. Delivery through the delivery apps is coming soon.', 'DesiSmash cooks chef-made smash burgers every Friday, Saturday and Sunday from 5 pm. Pre-order on this website, then collect for free or choose delivery within 3 miles of our Leicester kitchen. Enter your postcode in the delivery calculator to check Glenfield and nearby areas.']
   };
   const VAL_DEL = ['<b>Delivery coming soon</b><span>Collection only for now. Delivery through the delivery apps is coming soon.</span>', '<b>Delivery near you</b><span>We deliver within 3 miles of our kitchen, priced by distance. Enter your postcode in the <a href="#how">delivery calculator</a> to check Glenfield and nearby areas.</span>'];

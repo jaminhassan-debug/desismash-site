@@ -161,3 +161,9 @@ In `config.js`, `launch.preorder: true` lets people pre-order launch-weekend slo
 ### WhatsApp order message
 
 The order text is laid out like a kitchen ticket: customer name, phone, when they want it (COLLECT or DELIVER with day and time), the total, then the items and any allergy notes.
+
+### Order limit and "reply YES" confirmation
+
+`maxItems: 12` and `maxTotal: 60` in `config.js` stop very large baskets: the customer sees "Orders over 12 items or £60 need a quick chat first. Message us on WhatsApp" and cannot send. Set either to 0 for no limit.
+
+The order is only booked when Chef Hass messages the customer and they reply YES. The WhatsApp order text carries a "NEEDS CONFIRMING" line, and the on-screen confirmation, FAQ and guides say the same.

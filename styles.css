@@ -476,3 +476,6 @@ body.is-prelaunch .hero .status{display:none}
 .ar{font-family:'Noto Naskh Arabic','Geeza Pro','Segoe UI',Tahoma,'Arial',serif;font-weight:700;font-size:1.15em;letter-spacing:0;text-transform:none;line-height:1}
 .halal-chip .ar{font-size:1.25em;padding-right:7px;border-right:1px solid rgba(255,255,255,.45)}
 @media(max-width:480px){.halal-chip{margin:6px 0 0;display:flex;width:max-content}}
+
+.patty-note{margin:14px 0 4px}
+.patty-hint{margin:0 0 8px}

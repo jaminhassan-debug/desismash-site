@@ -44,6 +44,10 @@ window.DESI = {
   // Turn items off for the weekend: list menu ids or side ids, e.g. ["truffle", "paneer"].
   soldOut: [],
 
+  // Biggest basket the site accepts. Bigger orders must message you first (stops joke orders, protects slots). 0 = no limit.
+  maxItems: 12,
+  maxTotal: 60,
+
   // Orders each 30-minute slot can take. This is shown to customers. While the order database is off the site cannot count orders,
   // so YOU mark a slot full by adding it to fullSlots below.
   slotCap: 5,
