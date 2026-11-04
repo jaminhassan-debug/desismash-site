@@ -209,7 +209,8 @@
     $('item-desc').textContent = b.desc;
     setItemImg('images/' + b.id + '.jpg' + IV, b.name);
     let html = '';
-    if (!b.veg) html += '<fieldset class="opt"><legend>Patty</legend>' + radios('patty', C.patties.map((p) => ({ label: p.label, note: p.note })), 1) + '</fieldset>';
+    if (!b.veg) html += '<fieldset class="opt"><legend>Patty</legend><p class="fine patty-hint">The photo shows a beef patty. Choose beef or chicken below.</p>' + radios('patty', C.patties.map((p) => ({ label: p.label, note: p.note })), 1) + '</fieldset>';
+    else html += '<p class="note-box patty-note">This burger has tawa-seared paneer instead of a meat patty. The photo is the paneer burger.</p>';
     html += '<fieldset class="opt"><legend>Make it a meal?</legend>' + radios('meal', [
       { label: 'Burger only', price: money(t.burger) },
       { label: 'Meal deal', note: 'Burger, seasoned fries and a can', price: money(t.meal) }
