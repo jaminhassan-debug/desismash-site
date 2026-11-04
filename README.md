@@ -149,3 +149,15 @@ Do not use `&` or special characters in page titles, descriptions or share text 
 **To offer our own delivery again:** set `delivery.on` to `true` in `config.js`. The home page wording switches back by itself. Then ask for the guides to be rebuilt with `DELIVERY_ON = True` (removes the Update boxes), and update the search description in `index.html`, the structured data `deliveryMethod`, and the Google Business Profile.
 
 **When the delivery apps go live:** paste each store link into `apps` in `config.js` (the buttons stop saying "Coming soon"), then update the "Delivery coming soon" wording in `index.html`.
+
+### Pre-orders before launch
+
+In `config.js`, `launch.preorder: true` lets people pre-order launch-weekend slots while the countdown is still running. The slot picker starts at the launch day and time (Fri 4 Dec, 5 pm) and the page says "Pre-orders open". Set `preorder: false` to lock ordering until the launch time again. After the launch time the normal rules apply (45-minute lead time).
+
+### Slot cap (5 orders per slot)
+
+`slotCap: 5` in `config.js` is shown to customers ("Each 30-minute slot takes up to 5 orders"). While the order database is off the site cannot count orders, so you mark a slot full yourself: add it to `fullSlots` as `"YYYY-MM-DD HH:MM"` (UK time, 24-hour), for example `fullSlots: ["2026-12-04 18:30"]`. Full slots show as "(full)" and cannot be picked; a day with every slot full shows "(full)" and the page starts on the next free day. Once the order database is restored the count can be automatic.
+
+### WhatsApp order message
+
+The order text is laid out like a kitchen ticket: customer name, phone, when they want it (COLLECT or DELIVER with day and time), the total, then the items and any allergy notes.
