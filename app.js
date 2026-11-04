@@ -691,9 +691,33 @@
     if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg' + IV; im.alt = b.name + ' smash burger, ' + b.desc.replace(/\.$/, '').toLowerCase(); }
   }
 
-  /* ---------- delivery on/off (set from the kitchen screen) ---------- */
+  /* ---------- collection only mode (config.js: delivery.on = false) ---------- */
+  const collectionOnly = () => !!(C.delivery && C.delivery.on === false);
+  // [collection-only wording, wording when we offer delivery]. The page HTML already holds the collection-only wording.
+  const COPY = {
+    'hero-lead': ['Chef-led smash burgers in Leicester and Glenfield with 25 years of spice work behind every patty. Pick Original or Desi, beef or chicken, then collect from our Leicester kitchen.', 'Chef-led smash burgers in Leicester and Glenfield with 25 years of spice work behind every patty. Pick Original or Desi, beef or chicken, then collect or get it delivered.'],
+    'delivery-h': ['Delivery coming soon', 'Get burgers delivered near you'],
+    'delivery-p': ['We are collection only for now. Delivery through the delivery apps is coming soon.', 'Order direct for the best price, or find us on your favourite delivery app.'],
+    'how-p': ['Collect from our Leicester kitchen. Pre-order for any open slot this weekend.', 'Collect from our Leicester kitchen or have it delivered. Pre-order for any open slot this weekend.'],
+    'how-pay': ['Your order lands in our WhatsApp. We reply to confirm. Pay when you collect.', 'Your order lands in our WhatsApp. We reply to confirm. Pay on collection or delivery.'],
+    'faq-pay': ['You pay when you collect. Your order is confirmed when Chef Hass replies on WhatsApp.', 'You pay on collection or delivery. Your order is confirmed when Chef Hass replies on WhatsApp.'],
+    'send-note': ['You pay when you collect. Your order is confirmed when Chef Hass replies on WhatsApp.', 'You pay on collection or delivery. Your order is confirmed when Chef Hass replies on WhatsApp.'],
+    'faq-where': ['DesiSmash cooks chef-made smash burgers every Friday, Saturday and Sunday from 5 pm. Pre-order on this website and collect for free from our Leicester kitchen. Delivery through the delivery apps is coming soon.', 'DesiSmash cooks chef-made smash burgers every Friday, Saturday and Sunday from 5 pm. Pre-order on this website, then collect for free or choose delivery within 3 miles of our Leicester kitchen. Enter your postcode in the delivery calculator to check Glenfield and nearby areas.']
+  };
+  const VAL_DEL = ['<b>Delivery coming soon</b><span>Collection only for now. Delivery through the delivery apps is coming soon.</span>', '<b>Delivery near you</b><span>We deliver within 3 miles of our kitchen, priced by distance. Enter your postcode in the <a href="#how">delivery calculator</a> to check Glenfield and nearby areas.</span>'];
+  function applyCopy(on) {
+    const i = on ? 1 : 0;
+    Object.keys(COPY).forEach((id) => { const el = $(id); if (el) el.textContent = COPY[id][i]; });
+    const vd = $('val-del'); if (vd) vd.innerHTML = VAL_DEL[i];
+    const badge = $('coll-badge'); if (badge) badge.hidden = on;
+    document.querySelectorAll('.del-only').forEach((el) => { el.hidden = !on; });
+    const choice = document.querySelector('fieldset.seg'); if (choice) choice.hidden = !on;
+  }
+
+  /* ---------- delivery on/off (config.js switch, or the kitchen screen when the config allows delivery) ---------- */
   function applyDelivery(on) {
     C.deliveryOn = on;
+    applyCopy(on);
     const radio = document.querySelector('input[name=mode][value=Delivery]');
     const seg = radio && radio.closest('label');
     if (seg) seg.hidden = !on;
@@ -704,9 +728,10 @@
       const col = document.querySelector('input[name=mode][value=Collection]');
       if (col && !col.checked) { col.checked = true; col.dispatchEvent(new Event('change', { bubbles: true })); }
       $('addr').hidden = true;
-      $('faq-del').textContent = 'We are not delivering right now. Collection only, and it is always free.';
-      $('area').textContent = 'Delivery is switched off right now. Collection is free.';
-      if (!isClosed()) { $('announce').textContent = 'Collection only right now. Delivery is switched off.'; $('announce').hidden = false; }
+      const fixed = collectionOnly();
+      $('faq-del').textContent = fixed ? 'Not yet. We are collection only for now, and collection is always free. Delivery through the delivery apps is coming soon.' : 'We are not delivering right now. Collection only, and it is always free.';
+      $('area').textContent = fixed ? 'Collection only for now. Collection is always free, and delivery apps are coming soon.' : 'Delivery is switched off right now. Collection is free.';
+      if (!isClosed()) { $('announce').textContent = fixed ? ((C.delivery && C.delivery.note) || 'Collection only for now.') : 'Collection only right now. Delivery is switched off.'; $('announce').hidden = false; }
     } else {
       $('faq-del').textContent = C.deliveryArea;
       $('area').textContent = 'Delivery: ' + C.deliveryArea;
@@ -715,6 +740,7 @@
     renderCart();
   }
   async function loadSettings() {
+    if (collectionOnly()) return;   // the config switch wins over the database setting
     const O = C.orders;
     if (!O || !O.url || !O.key) return;
     try {
@@ -772,6 +798,7 @@
   linkRow($('apps-row'), [['Uber Eats', 'Order on Uber Eats', C.apps.uberEats], ['Deliveroo', 'Order on Deliveroo', C.apps.deliveroo], ['Just Eat', 'Order on Just Eat', C.apps.justEat]]);
   linkRow($('social-row'), [['Instagram', 'Follow for weekly drops', C.social.instagram], ['TikTok', 'Watch the smash', C.social.tiktok], ['Facebook', 'Join the page', C.social.facebook]]);
   fillDays(); renderCart();
+  if (collectionOnly()) applyDelivery(false); else applyCopy(true);   // the page HTML holds the collection-only wording
   loadSettings();
   setInterval(loadSettings, 120000);
 })();

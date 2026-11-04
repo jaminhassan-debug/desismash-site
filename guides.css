@@ -61,3 +61,4 @@ body{padding-bottom:0}
 @media(max-width:480px){.gtop{padding-inline:12px;gap:8px}.gtop .pill.order{padding:8px 12px;font-size:.8rem;min-height:40px}}
 @media(max-width:480px){.gtop .pill.order .long{display:none}}
 @media(max-width:340px){.gtop .gr{display:none}}
+.gdoc .notice{background:var(--cream);border:2px solid var(--brand);border-radius:12px;padding:12px 16px;font-size:1rem}

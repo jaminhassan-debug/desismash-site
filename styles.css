@@ -468,3 +468,7 @@ body.is-prelaunch .hero .status{display:none}
 @media(max-width:340px){.wordmark b{font-size:.95rem}.wordmark small{font-size:.44rem}.logo{width:40px;height:40px}}
 @media(max-width:340px){.cart-btn{padding:6px 8px;gap:4px;min-height:40px}.cart-btn span{padding:1px 6px}}
 @media(max-width:340px){.top-actions{gap:6px}}
+
+/* collection only badge in the hero */
+.coll-badge{align-self:flex-start;display:inline-block;margin:0;padding:8px 18px;border-radius:99px;background:#fff;color:var(--brand-dark);border:2px solid #fff;font-weight:700;font-size:.85rem;letter-spacing:.07em;text-transform:uppercase;line-height:1.2}
+@media(max-width:480px){.coll-badge{font-size:.74rem;padding:7px 14px}}
