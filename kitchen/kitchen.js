@@ -28,6 +28,10 @@
   let orders = [], customers = [], tab = 'kitchen', ofilter = 'all', mktOnly = false, lastNew = -1, soundOn = false, channel = null, reloadT = null;
 
   /* ---------- auth ---------- */
+  // Keep the screen on while the kitchen board is open. The browser releases the lock when the tab is hidden, so ask again when it returns.
+  let wake = null;
+  function keepAwake() { try { if (navigator.wakeLock && !$('app').hidden) navigator.wakeLock.request('screen').then((l) => { wake = l; }).catch(() => {}); } catch (e) { /* optional */ } }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') keepAwake(); });
   function showLogin(msg) { $('app').hidden = true; $('login').hidden = false; if (msg) { $('login-msg').textContent = msg; $('login-msg').hidden = false; } }
   async function enter() {
     const { data } = await sb.auth.getSession();
@@ -44,7 +48,7 @@
     $('login').hidden = true; $('app').hidden = false;
     applyRole();
     await loadAll(); subscribe(); tick();
-    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').catch(() => {}); } catch (e) { /* optional */ }
+    keepAwake();
   }
   $('login-form').addEventListener('submit', async (e) => {
     e.preventDefault(); $('login-msg').hidden = true;
