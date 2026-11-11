@@ -520,3 +520,5 @@ body.is-prelaunch .hero .status{display:none}
 .chef-copy .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .pill.outline{background:transparent;border:2px solid var(--brand);color:var(--brand-dark)}
 .pill.outline:hover{background:var(--brand);color:#fff}
+
+.card.soon{opacity:.8}.card.soon .shot img{filter:grayscale(.6)}.soon-badge{position:absolute;top:10px;left:10px;z-index:2;background:#111;color:#fff;border:1px solid var(--brand);border-radius:999px;padding:4px 12px;font:600 .8rem/1.2 inherit;letter-spacing:.02em}
