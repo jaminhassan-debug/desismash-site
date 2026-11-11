@@ -44,6 +44,10 @@ window.DESI = {
   // Turn items off for the weekend: list menu ids or side ids, e.g. ["truffle", "paneer"].
   soldOut: [],
 
+  // Burgers that are shown on the menu but not on sale yet: they say "Coming soon" and cannot be added.
+  // Launch menu is the other 7. Remove an id from this list to put it on sale (weekend 3 plan).
+  comingSoon: ["garlic", "stampede", "bombay", "truffle"],
+
   // Biggest basket the site accepts. Bigger orders must message you first (stops joke orders, protects slots). 0 = no limit.
   maxItems: 12,
   maxTotal: 60,

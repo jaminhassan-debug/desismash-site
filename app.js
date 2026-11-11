@@ -203,7 +203,7 @@
   function openBurger(id) {
     if (isClosed()) { toast(closedMsg()); return; }
     const b = C.burgers.find((x) => x.id === id);
-    if (!b || C.soldOut.includes(id)) return;
+    if (!b || isOff(id)) return;
     cur = { type: 'burger', b }; qty = 1;
     const t = C.tiers[b.tier];
     $('item-title').textContent = b.name;
@@ -265,7 +265,7 @@
   function openSide(id) {
     if (isClosed()) { toast(closedMsg()); return; }
     const s = C.sides.find((x) => x.id === id);
-    if (!s || C.soldOut.includes(id)) return;
+    if (!s || isOff(id)) return;
     cur = { type: 'side', s }; qty = 1;
     $('item-title').textContent = s.name;
     $('item-desc').textContent = s.desc;
@@ -328,25 +328,27 @@
   let filter = 'all';
   const FILTERS = [['all', 'All'], ['1', 'Classics'], ['2', 'Gourmet'], ['3', 'Heavyweight'], ['veg', 'Vegetarian']];
 
+  function isOff(id) { return C.soldOut.includes(id) || (C.comingSoon || []).includes(id); }
+  function isSoon(id) { return (C.comingSoon || []).includes(id) && !C.soldOut.includes(id); }
   function renderChips() {
     $('chips').innerHTML = FILTERS.map(([k, l]) => '<button class="chip" role="tab" data-f="' + k + '" aria-selected="' + (filter === k) + '">' + l + '</button>').join('');
   }
   function renderBurgers() {
-    const list = C.burgers.filter((b) => filter === 'all' || (filter === 'veg' ? b.veg : String(b.tier) === filter));
+    const list = C.burgers.filter((b) => filter === 'all' || (filter === 'veg' ? b.veg : String(b.tier) === filter)).sort((x, y) => isSoon(x.id) - isSoon(y.id));
     $('burger-grid').innerHTML = list.map((b) => {
-      const t = C.tiers[b.tier], sold = C.soldOut.includes(b.id);
-      return '<article class="card' + (sold ? ' sold' : '') + '">' +
-        '<div class="shot">' + ((C.recommended || []).includes(b.id) ? '<span class="rec">★ Chef Hass recommends</span>' : '') + (INFO && INFO.burgers[b.id] ? '<button type="button" class="info-btn" data-info="' + b.id + '" aria-label="Calorie and protein estimates and allergens for ' + esc(b.name) + '" title="Estimates and allergens">i</button>' : '') + '<img src="images/' + b.id + '.jpg' + IV + '" alt="' + esc(b.name) + '" width="560" height="420" loading="lazy" decoding="async"></div>' +
+      const t = C.tiers[b.tier], soon = isSoon(b.id), sold = isOff(b.id);
+      return '<article class="card' + (sold ? ' sold' : '') + (soon ? ' soon' : '') + '">' +
+        '<div class="shot">' + (soon ? '<span class="soon-badge">Coming soon</span>' : '') + ((C.recommended || []).includes(b.id) ? '<span class="rec">★ Chef Hass recommends</span>' : '') + (INFO && INFO.burgers[b.id] ? '<button type="button" class="info-btn" data-info="' + b.id + '" aria-label="Calorie and protein estimates and allergens for ' + esc(b.name) + '" title="Estimates and allergens">i</button>' : '') + '<img src="images/' + b.id + '.jpg' + IV + '" alt="' + esc(b.name) + '" width="560" height="420" loading="lazy" decoding="async"></div>' +
         '<h3>' + esc(b.name) + '</h3>' +
         '<div class="meta"><span class="tag">' + t.name + '</span>' + (b.veg ? '<span class="tag veg">Vegetarian</span>' : '') + heatHtml(b.heat) + '</div>' +
         '<p>' + esc(b.desc) + '</p>' +
         '<div class="foot"><span class="price">' + money(t.burger) + '<small>meal ' + money(t.meal) + '</small></span>' +
-        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (sold ? 'Sold out' : prelaunch() && !preorderOn() ? 'Coming soon' : isClosed() ? 'Closed' : addLabel()) + '</button></div></article>';
+        '<button class="btn primary" data-burger="' + b.id + '"' + (sold ? ' disabled' : '') + '>' + (soon ? 'Coming soon' : sold ? 'Sold out' : prelaunch() && !preorderOn() ? 'Coming soon' : isClosed() ? 'Closed' : addLabel()) + '</button></div></article>';
     }).join('');
   }
   function renderSides() {
     $('side-grid').innerHTML = C.sides.map((s) => {
-      const sold = C.soldOut.includes(s.id);
+      const sold = isOff(s.id);
       return '<article class="card' + (sold ? ' sold' : '') + '">' +
         '<div class="shot"><img src="images/side-' + esc(s.id) + '.jpg' + IV + '" alt="' + esc(s.name) + '" width="560" height="373" loading="lazy" decoding="async"></div>' +
         '<h3>' + esc(s.name) + '</h3><p>' + esc(s.desc) + '</p>' +
@@ -362,7 +364,7 @@
 
   function renderSpecial() {
     const b = C.burgers.find((x) => x.id === C.special);
-    if (!b || C.soldOut.includes(b.id)) return;
+    if (!b || isOff(b.id)) return;
     const el = $('special');
     el.hidden = false;
     el.innerHTML = '<div class="inner"><div><span class="eyebrow">This week\'s special</span><h3>' + esc(b.name) + '</h3><p>' + esc(b.desc) + '</p></div><button class="btn primary" data-burger="' + b.id + '">' + (prelaunch() && !preorderOn() ? 'Coming soon' : preorderOn() ? 'Pre-order it' : 'Order it') + '</button></div>';
@@ -721,7 +723,7 @@
   };
   function renderStories() {
     const el = $('stories');
-    const list = (C.favourites || []).map((f) => ({ f, b: C.burgers.find((x) => x.id === f.id) })).filter((x) => x.b && !C.soldOut.includes(x.b.id));
+    const list = (C.favourites || []).map((f) => ({ f, b: C.burgers.find((x) => x.id === f.id) })).filter((x) => x.b && !isOff(x.b.id));
     if (!list.length) { el.parentElement.hidden = true; return; }
     el.innerHTML = list.map(({ f, b }) =>
       '<button class="st" role="listitem" type="button" data-burger="' + esc(b.id) + '" aria-label="' + esc(b.name) + ', ' + money(C.tiers[b.tier].burger) + '">' +
@@ -744,7 +746,7 @@
   function renderHeroImg() {
     const b = C.burgers.find((x) => x.id === C.special);
     const im = $('hero-img');
-    if (b && !C.soldOut.includes(b.id)) { im.src = 'images/' + b.id + '-banner.jpg' + IV; im.alt = b.name + ' smash burger, ' + b.desc.replace(/\.$/, '').toLowerCase(); }
+    if (b && !isOff(b.id)) { im.src = 'images/' + b.id + '-banner.jpg' + IV; im.alt = b.name + ' smash burger, ' + b.desc.replace(/\.$/, '').toLowerCase(); }
   }
 
   /* ---------- collection only mode (config.js: delivery.on = false) ---------- */
